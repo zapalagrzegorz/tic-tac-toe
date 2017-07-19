@@ -36,23 +36,26 @@ function score (game) {
                     console.log('successVertical');
                     return 1;
                 }
-            } else if (game.board[j][i] == game.player) {
+            }
+            if (game.board[j][i] == game.player) {
                 successPlayerHorizontal++;
                 if (successPlayerHorizontal == 3) {
                     console.log('successHorizontal');
                     return 1;
                 }
-            } else if (game.board[i][j] == game.opponent) {
+            }
+            if (game.board[i][j] == game.opponent) {
                 successOpponentVertical++;
                 if (successOpponentVertical == 3) {
-                    console.log('successVertical');
+                    console.log('successOpponentVertical');
                     return -1;
                 }
-            } else if (game.board[j][i] == game.opponent) {
+            } 
+            if (game.board[j][i] == game.opponent) {
                 successOpponentHorizontal++;
                 if (successOpponentHorizontal == 3) {
-                    console.log('successHorizontal');
-                    return 1;
+                    console.log('successOpponentHorizontal');
+                    return -1;
                 }
             }
         }
@@ -63,7 +66,7 @@ function score (game) {
 
     // diagonal forward
     for (let i = 0; i < 3; i++) {
-        if (game.board[i][i] == game.opponent) {
+        if (game.board[i][i] == game.player) {
             successPlayerDiagonal++;
             if (successPlayerDiagonal == 3) {
                 console.log('successPlayerDiagonal');
@@ -74,23 +77,23 @@ function score (game) {
             successOpponentDiagonal++;
             if (successOpponentDiagonal == 3) {
                 console.log('successOpponentDiagonal');
-                return 1;
+                return -1;
             }
         }
     }
     // diagonal backward
-    for (let i = 2; i >= 0; i--) {
-        if (game.board[i][i] == game.player) {
+    for (let i = 2, j=0; i >= 0; i--, j++) {
+        if (game.board[i][j] == game.player) {
             successPlayerDiagonalRev++;
             if (successPlayerDiagonalRev == 3) {
                 console.log('successPlayerDiagonalBackward');
                 return 1;
             }
-        } else if (game.board[i][i] == game.player) {
+        } else if (game.board[i][j] == game.opponent) {
             successOpponentDiagonalRev++;
             if (successOpponentDiagonalRev == 3) {
                 console.log('successOpponentDiagonalRev');
-                return 1;
+                return -1;
             }
         }
     }
@@ -98,18 +101,61 @@ function score (game) {
 
 
 QUnit.test('Sprawdzanie warunku końca gry - sama funkcja', function (assert) {
-    game.board =  [[1, 0, 1], [1, 1, 0], [1, 0, 1]];
-    assert.deepEqual( score(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[1, 0, 1],[1, 1, 0], [1, 0, 1]]');
+    game.board =  [[1, 2, 2], [1, 2, 2], [1, 2, 2]];
+    assert.deepEqual( score(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]');
     
-    game.board =  [[0, 1, 1], [2, 1, 0], [2, 1, 1]];
-    assert.deepEqual( score(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[1, 0, 1],[1, 1, 0], [1, 0, 1]]');
-      
-        
-    game.board = [[0, 0, 0], [2, 0, 0], [2, 2, 2]];
-    assert.deepEqual( score(game), -1, 'Koniec gry: tablica = [[0, 0, 0], [2, 0, 0], [2, 2, 2]]');
+    game.board =  [[2, 1, 2], [2, 1, 2], [2, 1, 2]];
+    assert.deepEqual( score(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[1, 0, 1],[1, 1, 0], [1, 0, 1]]');
 
-    game.board = [[2, 2, 2], [2, 0, 0], [2, 2, 2]];
-    assert.equal( score(game), undefined, 'Dalsza gra tablica = [[2, 2, 2], [2, 0, 0], [2, 2, 2]]');
+    game.board =  [[0, 2, 1], [2, 2, 1], [2, 1, 1]];
+    assert.deepEqual( score(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
+    
+    game.board =  [[1, 1, 1], [2, 2, 2], [2, 2, 2]];
+    assert.deepEqual( score(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
+    
+    game.board =  [[2, 2, 2], [1, 1, 1], [2, 2, 2]];
+    assert.deepEqual( score(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
+    
+    game.board =  [[2, 2, 2], [2, 2, 2], [1, 1, 1]];
+    assert.deepEqual( score(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
+   
+    // kółko
+    game.board =  [[0, 0, 0], [2, 2, 2], [2, 2, 2]];
+    assert.deepEqual( score(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[1, 1, 1], [2, 2, 1], [2, 1, 1]]');
+    
+    game.board =  [[2, 2, 2], [0, 0, 0], [2, 2, 2]];
+    assert.deepEqual( score(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
+    
+    game.board =  [[2, 2, 2], [2, 2, 2], [0, 0, 0]];
+    assert.deepEqual( score(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
+    
+    game.board =  [[0, 2, 2], [0, 2, 2], [0, 2, 2]];
+    assert.deepEqual( score(game), -1, 'Koniec gry, wygrywa kółko poziomo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
+      
+    game.board = [[2, 0, 2], [2, 0, 2], [2, 0, 2]];
+    assert.deepEqual( score(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[0, 0, 0], [2, 0, 0], [2, 2, 2]]');
+  
+    game.board = [[2, 2, 0], [2, 2, 0], [2, 2, 0]];
+    assert.deepEqual( score(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[0, 0, 0], [2, 0, 0], [2, 2, 2]]');
+
+    // skosy
+    game.board = [[1, 2, 2], [2, 1, 2], [2, 2, 1]];
+    assert.equal( score(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]');
+
+    game.board = [[2, 2, 1], [2, 1, 2], [1, 2, 2]];
+    assert.equal( score(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie do tyłu = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]');
+    
+    game.board = [[0, 2, 2], [2, 0, 2], [2, 2, 0]];
+    assert.equal( score(game), -1, 'Koniec gry: wygrywa kółko po skosie = [[2, 2, 2], [2, 0, 0], [2, 2, 2]]');
+
+    game.board = [[2, 2, 0], [2, 0, 2], [0, 2, 2]];
+    assert.equal( score(game), -1, 'Koniec gry: wygrywa kółko po skosie do tyłu = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]');
+
+    game.board = [[0, 0, 1], [1, 1, 0], [0, 1, 1]];
+    assert.equal( score(game), undefined, 'Dalsza gra tablica = [[1, 0, 0], [1, 1, 0], [0, 1, 0]]');
+
+
+
 //     assert.deepEqual(win(game.player, [[2, 2, 2], [2, 2, 2], [0, 0, 0]]), true, 'Koniec gry: tablica = [[2, 2, 2], [2, 2, 2], [0, 0, 0]]');
 //     assert.deepEqual(win(game.player, [[0, 2, 2], [0, 2, 2], [0, 2, 2]]), true, 'Koniec gry: tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]');
 //     assert.deepEqual(win(game.player, [[2, 0, 2], [2, 0, 2], [2, 0, 2]]), true, 'Koniec gry: tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]');
