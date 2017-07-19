@@ -1,0 +1,37 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "windows"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "keyword-spacing": ["error", 
+            { "before": true, "after": true}
+        ],
+        "eqeqeq": ["warn"],
+
+        "space-before-function-paren": ["error", "always"],
+        "comma-spacing": ["error"],
+        "brace-style": ["error", "1tbs"],
+        "space-before-blocks": ["error"],
+        // wyświetlanie obiektów w odrębnych liniach - wąsów i properties
+        "object-curly-newline": ["error", { "multiline": true }],
+        "object-property-newline": "error"
+    }
+}

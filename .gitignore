@@ -1,0 +1,17 @@
+# Include your project-specific ignores in this file
+# Read about how to use .gitignore: https://help.github.com/articles/ignoring-files
+# Include your project-specific ignores in this file
+# Read about how to use .gitignore: https://help.github.com/articles/ignoring-files
+/node_modules/*/**
+/node_modules
+bower_components/*/**
+/dev/temp/*
+/CNAME
+/todo
+/dev/js/jsconfig.json
+/.vscode
+/.vscode/settings.json
+/dev/css/main.css
+/build
+/dev/js/scriptsEs5.**
+/test/**
