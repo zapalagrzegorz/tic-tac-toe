@@ -1,14 +1,14 @@
 
 
 //  board is 2d arr 
-    var board =  [[0, 2, 0],[1, 2, 1],[1, 0, 2]];
-    let availMoves = get_available_moves(board).reduce(function (acc, curr){
-        return acc.concat(curr);
-    }, []);
+// var board = [[0, 2, 0], [1, 2, 1], [1, 0, 2]];
+// let availMoves = get_available_moves(board).reduce(function (acc, curr) {
+//     return acc.concat(curr);
+// }, []);
 
 //  ... operator - used as spread operator
-    var myNewArray4 = [].concat(...get_available_moves(board));
-    console.log(myNewArray4);
+// var myNewArray4 = [].concat(...get_available_moves(board));
+// console.log(myNewArray4);
 
 
 
@@ -113,19 +113,19 @@ function setScore(game) {
     return undefined;
 }
 
-function get_available_moves(board){
+function get_available_moves(board) {
     let availableMoves = [];
-    for(let i = 0; i<=2; i++){
-        for(let j = 0; j<=2; j++){
-            if(board[i][j] == 2){
-                availableMoves.push([i,j])
+    for (let i = 0; i <= 2; i++) {
+        for (let j = 0; j <= 2; j++) {
+            if (board[i][j] == 2) {
+                availableMoves.push([i, j])
             }
         }
     }
     return availableMoves;
 }
 
-function get_new_state(){
+function get_new_state() {
     // 
 }
 
@@ -146,73 +146,108 @@ function minimax(game) {
 }
 // let scoreGameTemp = minimax(game);
 // console.log(score);
-console.log(get_available_moves(game.board));
+// console.log(get_available_moves(game.board));
 
-
-QUnit.test('Sprawdzanie warunku końca gry - sama funkcja', function (assert) {
+QUnit.module("wygrywa krzyżyk - setScore()");
+QUnit.test('tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]', function (assert) {
     game.board = [[1, 2, 2], [1, 2, 2], [1, 2, 2]];
     assert.deepEqual(setScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]');
-
+});
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
     game.board = [[2, 1, 2], [2, 1, 2], [2, 1, 2]];
     assert.deepEqual(setScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]');
+});
 
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
     game.board = [[0, 2, 1], [2, 2, 1], [2, 1, 1]];
     assert.deepEqual(setScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
-
+})
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
     game.board = [[1, 1, 1], [2, 2, 2], [2, 2, 2]];
     assert.deepEqual(setScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[1, 1, 1], [2, 2, 2], [2, 2, 2]]');
-
+});
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
     game.board = [[2, 2, 2], [1, 1, 1], [2, 2, 2]];
     assert.deepEqual(setScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[2, 2, 2], [1, 1, 1], [2, 2, 2]]');
-
+});
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
     game.board = [[2, 2, 2], [2, 2, 2], [1, 1, 1]];
     assert.deepEqual(setScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[2, 2, 2], [2, 2, 2], [1, 1, 1]]');
+});
 
+QUnit.module("Wygrywa kółko - setScore()");
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
     // kółko
     game.board = [[0, 0, 0], [2, 2, 2], [2, 2, 2]];
     assert.deepEqual(setScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[0, 0, 0], [2, 2, 2], [2, 2, 2]]');
-
+});
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
     game.board = [[2, 2, 2], [0, 0, 0], [2, 2, 2]];
     assert.deepEqual(setScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[2, 2, 2], [0, 0, 0], [2, 2, 2]]');
-
+});
+QUnit.test('tablica = [[2, 2, 2], [2, 2, 2], [0, 0, 0]]', function (assert) {
     game.board = [[2, 2, 2], [2, 2, 2], [0, 0, 0]];
     assert.deepEqual(setScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[2, 2, 2], [2, 2, 2], [0, 0, 0]]');
-
+});
+QUnit.test('tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]', function (assert) {
     game.board = [[0, 2, 2], [0, 2, 2], [0, 2, 2]];
     assert.deepEqual(setScore(game), -1, 'Koniec gry, wygrywa kółko poziomo; tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]');
-
+});
+QUnit.test('tablica = [[2, 0, 2], [2, 0, 2], [2, 0, 2]]', function (assert) {
     game.board = [[2, 0, 2], [2, 0, 2], [2, 0, 2]];
     assert.deepEqual(setScore(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[2, 0, 2], [2, 0, 2], [2, 0, 2]]');
-
+});
+QUnit.test('tablica = [[2, 2, 0], [2, 2, 0], [2, 2, 0]]', function (assert) {
     game.board = [[2, 2, 0], [2, 2, 0], [2, 2, 0]];
     assert.deepEqual(setScore(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[2, 2, 0], [2, 2, 0], [2, 2, 0]]');
-
+});
+QUnit.test('tablica = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]', function (assert) {
     // skosy
     game.board = [[1, 2, 2], [2, 1, 2], [2, 2, 1]];
-    assert.equal(setScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]');
-
+    assert.deepEqual(setScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]');
+});
+QUnit.test('tablica = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]', function (assert) {
     game.board = [[2, 2, 1], [2, 1, 2], [1, 2, 2]];
-    assert.equal(setScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie do tyłu = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]');
-
+    assert.deepEqual(setScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie do tyłu = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]');
+});
+QUnit.test('tablica = [[0, 2, 2], [2, 0, 2], [2, 2, 0]]', function (assert) {
     game.board = [[0, 2, 2], [2, 0, 2], [2, 2, 0]];
-    assert.equal(setScore(game), -1, 'Koniec gry: wygrywa kółko po skosie = [[0, 2, 2], [2, 0, 2], [2, 2, 0]]');
-
+    assert.deepEqual(setScore(game), -1, 'Koniec gry: wygrywa kółko po skosie = [[0, 2, 2], [2, 0, 2], [2, 2, 0]]');
+});
+QUnit.test('tablica = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]', function (assert) {
     game.board = [[2, 2, 0], [2, 0, 2], [0, 2, 2]];
-    assert.equal(setScore(game), -1, 'Koniec gry: wygrywa kółko po skosie do tyłu = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]');
-
+    assert.deepEqual(setScore(game), -1, 'Koniec gry: wygrywa kółko po skosie do tyłu = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]');
+});
+QUnit.module("Remis - setScore()");
+QUnit.test('tablica = [[0, 0, 1], [1, 1, 0], [0, 1, 1]]', function (assert) {
     game.board = [[0, 0, 1], [1, 1, 0], [0, 1, 1]];
-    assert.equal(setScore(game), 0, 'Remis, koniec gry; tablica = [[0, 0, 1], [1, 1, 0], [0, 1, 1]]');
-
+    assert.deepEqual(setScore(game), 0, 'Remis, koniec gry; tablica = [[0, 0, 1], [1, 1, 0], [0, 1, 1]]');
+});
+QUnit.test('tablica = [[0, 1, 0], [1, 0, 0], [1, 0, 1]]', function (assert) {
     game.board = [[0, 1, 0], [1, 0, 0], [1, 0, 1]];
-    assert.equal(setScore(game), 0, 'Remis, koniec gry; tablica = [[0, 1, 0], [1, 0, 0], [1, 0, 1]]');
+    assert.deepEqual(setScore(game), 0, 'Remis, koniec gry; tablica = [[0, 1, 0], [1, 0, 0], [1, 0, 1]]');
+});
 
+QUnit.module("Dalsza gra - setScore()");
+
+QUnit.test('tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]', function (assert) {
     game.board = [[2, 0, 1], [1, 1, 0], [0, 1, 1]];
-    assert.equal(setScore(game), undefined, 'Dalsza gra tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]');
+    assert.deepEqual(setScore(game), undefined, 'Dalsza gra tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]');
+});
 
-    game.board =  [[0, 2, 0],[1, 2, 1],[1, 0, 2]];
-    let availMoves = get_available_moves(game.board).reduce(function (acc, curr){
-        return acc.concat(curr);
-    }, []);
-    assert.equal(availMoves.toString(), '0,1,1,1,2,2', 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
+QUnit.module("Dostępne ruchy - get_available_moves()");
+
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+    game.board = [[2, 2, 2], [2, 2, 2], [2, 2, 2]];
+    assert.deepEqual(get_available_moves(game.board), [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
+});
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+    game.board = [[0, 2, 0], [1, 2, 1], [1, 0, 2]];
+    assert.deepEqual(get_available_moves(game.board), [[0, 1], [1, 1], [2, 2]], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
+});
+
+QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+    game.board = [[0, 2, 2], [2, 2, 1], [0, 0, 1]];
+    assert.deepEqual(get_available_moves(game.board), [[0,1],[0,2],[1,0],[1,1]], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
 });
 
