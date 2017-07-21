@@ -1,6 +1,14 @@
 
 
 //  board is 2d arr 
+    var board =  [[0, 2, 0],[1, 2, 1],[1, 0, 2]];
+    let availMoves = get_available_moves(board).reduce(function (acc, curr){
+        return acc.concat(curr);
+    }, []);
+
+//  ... operator - used as spread operator
+    var myNewArray4 = [].concat(...get_available_moves(board));
+    console.log(myNewArray4);
 
 
 
@@ -207,3 +215,4 @@ QUnit.test('Sprawdzanie warunku końca gry - sama funkcja', function (assert) {
     }, []);
     assert.equal(availMoves.toString(), '0,1,1,1,2,2', 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
 });
+
