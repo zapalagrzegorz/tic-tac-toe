@@ -1,3 +1,2 @@
 # Tic tac toe
-FCC challange to make a pomodoro clock
-"# tic-tac-toe" 
+FCC challange to make an unbeatable tic-tac-toe game 
