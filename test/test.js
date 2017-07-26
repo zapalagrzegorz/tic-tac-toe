@@ -10,16 +10,17 @@
 // var myNewArray4 = [].concat(...get_available_moves(board));
 // console.log(myNewArray4);
 
-
+    let scores = [];
+    let moves = [];
 
 var game = {
     player: 1,
     opponent: 0,
     current: 1,
     board: [
-        [0, 2, 0],
-        [1, 2, 1],
-        [1, 0, 2]
+        [0, 2, 2], 
+        [1, 0, 1], 
+        [0, 0, 1]
     ]
 
 };
@@ -125,29 +126,46 @@ function get_available_moves(board) {
     return availableMoves;
 }
 
-function get_new_state() {
-    // 
+function get_new_state(move) {
+    // kopiowanie tworzy referencję
+    // for(var prop in this){
+    //     newGame[prop] = this[prop];
+    // }
+
+    let newGame = JSON.parse(JSON.stringify(this));
+    newGame.board[ move[0] ] [ move[1] ] = newGame.current;
+    // change player
+    newGame.current = (newGame.current == 1 ) ? 0 : 1;
+    return newGame;
 }
 
 function minimax(game) {
+    // return score if game over
     let score = setScore(game);
     if (score != undefined) return score;
-    let scores = [];
-    let moves = [];
 
+    // let possibleGame = {};
+    
+    // [[0,1],[0,2],[1,0],[1,1]]
     // Populate the scores array, recursing as needed
-    // game.get_available_moves().forEach(function (move) {
-    //     possible_game = game.get_new_state(move)
-    //     scores.push(minimax(possible_game));
-    //     moves.push(move);
-    // }, this)
-    // end
+    get_available_moves(game.board).forEach(function iterateMoves (move) {
 
+        possibleGame = get_new_state.call(game, move);
+
+        scores.push(minimax(possibleGame));
+        
+        moves.push(move);
+    }, this)
 }
+
+minimax(game);
+console.log(minimax.scores);
+console.log(minimax.moves);
 // let scoreGameTemp = minimax(game);
 // console.log(score);
 // console.log(get_available_moves(game.board));
 
+/* 
 QUnit.module("wygrywa krzyżyk - setScore()");
 QUnit.test('tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]', function (assert) {
     game.board = [[1, 2, 2], [1, 2, 2], [1, 2, 2]];
@@ -248,6 +266,7 @@ QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
 
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
     game.board = [[0, 2, 2], [2, 2, 1], [0, 0, 1]];
-    assert.deepEqual(get_available_moves(game.board), [[0,1],[0,2],[1,0],[1,1]], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
+    assert.deepEqual(get_available_moves(game.board), [[0,1],[0,2],[1,0],[1,1]], 'dostępne ruchy z tablicy [[0, 2, 2], [2, 2, 1], [0, 0, 1]] to [0,1],[0,2],[1,0],[1,1]');
 });
 
+*/
