@@ -1,35 +1,35 @@
 {
   "name": "fcc",
   "version": "1.0.0",
-  "description": "free code camp challenge",
+  "description": "tic tac toe - free code camp challenge",
   "main": "index.html",
   "dependencies": {
     "bootstrap": "^4.0.0-alpha.6"
   },
   "devDependencies": {
-    "autoprefixer": "^7.1.1",
+    "autoprefixer": "^7.1.2",
     "babel-cli": "^6.22.2",
-    "babel-preset-env": "^1.5.2",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.0",
     "cssnano": "^3.10.0",
-    "eslint": "^3.13.1",
-    "eslint-plugin-import": "^2.2.0",
-    "grunt": "^0.4.5",
+    "eslint": "^4.0.1",
+    "eslint-plugin-import": "^2.7.0",
+    "grunt": "^1.0.0",
     "grunt-babel": "^6.0.0",
     "grunt-browser-sync": "^2.2.0",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-cssmin": "^2.0.0",
-    "grunt-contrib-imagemin": "^1.0.1",
-    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-cssmin": "^2.2.1",
+    "grunt-contrib-imagemin": "^2.0.1",
+    "grunt-contrib-uglify": "^3.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-css-clean": "^0.1.0",
     "grunt-newer": "^1.2.0",
     "grunt-postcss": "^0.8.0",
     "grunt-sass": "^2.0.0",
     "load-grunt-tasks": "^3.5.2",
-    "pixrem": "^3.0.2",
-    "qunitjs": "^2.3.3"
+    "pixrem": "^4.0.1",
+    "qunitjs": "^2.4.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
