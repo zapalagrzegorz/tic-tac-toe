@@ -7,160 +7,192 @@
 // }, []);
 
 //  ... operator - used as spread operator
+//  mdn example: 
+// var parts = ['shoulders', 'knees']; 
+// var lyrics = ['head', ...parts, 'and', 'toes']; 
+// ["head", "shoulders", "knees", "and", "toes"]
 // var myNewArray4 = [].concat(...get_available_moves(board));
 // console.log(myNewArray4);
+class Computer {
+    constructor () {
+        this.choice = 0;
+    }
+    setScore (game) {
+        let draw = 0;
+        let successPlayerVertical = 0;
+        let successPlayerHorizontal = 0;
+        let successOpponentVertical = 0;
+        let successOpponentHorizontal = 0;
+        let successPlayerDiagonal = 0;
+        let successOpponentDiagonal = 0;
+        let successPlayerDiagonalRev = 0;
+        let successOpponentDiagonalRev = 0;
 
-    let scores = [];
-    let moves = [];
+        // check column and row
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (game.board[i][j] == game.player) {
+                    successPlayerVertical++;
+                    if (successPlayerVertical == 3) {
+                        // console.log('successPlayerVertical');
+                        return 1;
+                    }
+                }
+                if (game.board[j][i] == game.player) {
+                    successPlayerHorizontal++;
+                    if (successPlayerHorizontal == 3) {
+                        // console.log('successPlayerHorizontal');
+                        return 1;
+                    }
+                }
+                if (game.board[i][j] == game.opponent) {
+                    successOpponentVertical++;
+                    if (successOpponentVertical == 3) {
+                        // console.log('successOpponentVertical');
+                        return -1;
+                    }
+                }
+                if (game.board[j][i] == game.opponent) {
+                    successOpponentHorizontal++;
+                    if (successOpponentHorizontal == 3) {
+                        // console.log('successOpponentHorizontal');
+                        return -1;
+                    }
+                }
+                if (game.board[i][j] != 2) {
+                    draw++;
+                }
+            }
+            // clear after each row/column
+            successPlayerVertical = successPlayerHorizontal = 0;
+            successOpponentVertical = successOpponentHorizontal = 0;
+        }
 
-var game = {
-    player: 1,
-    opponent: 0,
+        // diagonal forward
+        for (let i = 0; i < 3; i++) {
+            if (game.board[i][i] == game.player) {
+                successPlayerDiagonal++;
+                if (successPlayerDiagonal == 3) {
+                    // console.log('successPlayerDiagonal');
+                    return 1;
+                }
+            }
+            if (game.board[i][i] == game.opponent) {
+                successOpponentDiagonal++;
+                if (successOpponentDiagonal == 3) {
+                    // console.log('successOpponentDiagonal');
+                    return -1;
+                }
+            }
+        }
+        // diagonal backward
+        for (let i = 2, j = 0; i >= 0; i--, j++) {
+            if (game.board[i][j] == game.player) {
+                successPlayerDiagonalRev++;
+                if (successPlayerDiagonalRev == 3) {
+                    // console.log('successPlayerDiagonalBackward');
+                    return 1;
+                }
+            } else if (game.board[i][j] == game.opponent) {
+                successOpponentDiagonalRev++;
+                if (successOpponentDiagonalRev == 3) {
+                    // console.log('successOpponentDiagonalRev');
+                    return -1;
+                }
+            }
+        }
+
+        if (draw == 9) {
+            return 0;
+        } else {
+            return undefined;
+        }
+    }
+    get_available_moves (game) {
+        let availableMoves = [];
+        for (let i = 0; i <= 2; i++) {
+            for (let j = 0; j <= 2; j++) {
+                if (game.board[i][j] == 2) {
+                    availableMoves.push([i, j]);
+                }
+            }
+        }
+        return availableMoves;
+    }
+    get_new_state (move, game) {
+        // kopiowanie tworzy referencję
+        // for(var prop in this){
+        //     newGame[prop] = this[prop];
+        // }
+        // aby zrobić deep copy MDN rekomenduje parse i stringify obiektu JSON
+        let newGame = JSON.parse(JSON.stringify(game));
+        newGame.board[move[0]][move[1]] = newGame.current;
+        // change player
+        newGame.current = (newGame.current == 1) ? 0 : 1;
+        return newGame;
+    }
+    minimax (game) {
+        // return score if game over
+        let score = this.setScore(game);
+        if (score != undefined) return score;
+        let scores = [];
+        let moves = [];
+
+        // Populate the scores array, recursing as needed
+        this.get_available_moves(game).forEach(function iterateMoves (move) {
+
+            let possibleGame = this.get_new_state(move, game);
+
+            scores.push(this.minimax(possibleGame));
+
+            moves.push(move);
+        }, this);
+
+        // # Do the min or the max calculation
+        // This is the max calculation
+        if (game.current == game.player) {
+            let max_score_index = scores.indexOf(Math.max(...scores));
+            this.choice = moves[max_score_index];
+            return scores[max_score_index];
+        } else {
+            // # This is the min calculation
+            let min_score_index = scores.indexOf(Math.min(...scores));
+            this.choice = moves[min_score_index];
+            return scores[min_score_index];
+        }
+    }
+}
+let computer = new Computer;
+
+let gameReal = {
+    player: 0,
+    opponent: 1,
     current: 1,
-    board: [
-        [0, 2, 2], 
-        [1, 0, 1], 
-        [0, 0, 1]
-    ]
-
+    board: [ [2, 2, 2], [2, 0, 2], [2, 2, 2] ]
 };
 
-function setScore(game) {
-    let draw = 0;
-    let successPlayerVertical = 0;
-    let successPlayerHorizontal = 0;
-    let successOpponentVertical = 0;
-    let successOpponentHorizontal = 0;
-    let successPlayerDiagonal = 0;
-    let successOpponentDiagonal = 0;
-    let successPlayerDiagonalRev = 0;
-    let successOpponentDiagonalRev = 0;
+computer.minimax(gameReal);
+// początek gry - wybierz kółko lub krzyżyk
+// gra
+// ponowna gra?
+while ( computer.setScore(gameReal) == undefined) {
+    computer.minimax(gameReal);
+    gameReal.board[ computer.choice[0] ] [ computer.choice[1] ] = 1;
+    console.log('computer.choice: ' + computer.choice);
+    console.log('board: ' + gameReal.board);
 
-    // check column and row
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            if (game.board[i][j] == game.player) {
-                successPlayerVertical++;
-                if (successPlayerVertical == 3) {
-                    console.log('successVertical');
-                    return 1;
-                }
-            }
-            if (game.board[j][i] == game.player) {
-                successPlayerHorizontal++;
-                if (successPlayerHorizontal == 3) {
-                    console.log('successHorizontal');
-                    return 1;
-                }
-            }
-            if (game.board[i][j] == game.opponent) {
-                successOpponentVertical++;
-                if (successOpponentVertical == 3) {
-                    console.log('successOpponentVertical');
-                    return -1;
-                }
-            }
-            if (game.board[j][i] == game.opponent) {
-                successOpponentHorizontal++;
-                if (successOpponentHorizontal == 3) {
-                    console.log('successOpponentHorizontal');
-                    return -1;
-                }
-            }
-            if (game.board[i][j] != 2) {
-                if (++draw == 9) {
-                    return 0;
-                }
-            }
-        }
-        // clear after each row/column
-        successPlayerVertical = successPlayerHorizontal = 0;
-        successOpponentVertical = successOpponentHorizontal = 0;
-    }
-
-    // diagonal forward
-    for (let i = 0; i < 3; i++) {
-        if (game.board[i][i] == game.player) {
-            successPlayerDiagonal++;
-            if (successPlayerDiagonal == 3) {
-                console.log('successPlayerDiagonal');
-                return 1;
-            }
-        }
-        if (game.board[i][i] == game.opponent) {
-            successOpponentDiagonal++;
-            if (successOpponentDiagonal == 3) {
-                console.log('successOpponentDiagonal');
-                return -1;
-            }
+    while (true) {
+        var nums = prompt('player move - 2 nums: ');
+        console.log('player.move: ' + nums[0] + ' ' + nums[1]);
+        if ( gameReal.board[ nums[0] ] [ nums[1] ] == 2 ) {
+            gameReal.board[ nums[0]] [ nums[1] ] = 0;
+            break;
         }
     }
-    // diagonal backward
-    for (let i = 2, j = 0; i >= 0; i-- , j++) {
-        if (game.board[i][j] == game.player) {
-            successPlayerDiagonalRev++;
-            if (successPlayerDiagonalRev == 3) {
-                console.log('successPlayerDiagonalBackward');
-                return 1;
-            }
-        } else if (game.board[i][j] == game.opponent) {
-            successOpponentDiagonalRev++;
-            if (successOpponentDiagonalRev == 3) {
-                console.log('successOpponentDiagonalRev');
-                return -1;
-            }
-        }
-    }
-    return undefined;
+    console.log('board: ' + gameReal.board);
 }
+console.log('board: ' + gameReal.board);
 
-function get_available_moves(board) {
-    let availableMoves = [];
-    for (let i = 0; i <= 2; i++) {
-        for (let j = 0; j <= 2; j++) {
-            if (board[i][j] == 2) {
-                availableMoves.push([i, j])
-            }
-        }
-    }
-    return availableMoves;
-}
-
-function get_new_state(move) {
-    // kopiowanie tworzy referencję
-    // for(var prop in this){
-    //     newGame[prop] = this[prop];
-    // }
-
-    let newGame = JSON.parse(JSON.stringify(this));
-    newGame.board[ move[0] ] [ move[1] ] = newGame.current;
-    // change player
-    newGame.current = (newGame.current == 1 ) ? 0 : 1;
-    return newGame;
-}
-
-function minimax(game) {
-    // return score if game over
-    let score = setScore(game);
-    if (score != undefined) return score;
-
-    // let possibleGame = {};
-    
-    // [[0,1],[0,2],[1,0],[1,1]]
-    // Populate the scores array, recursing as needed
-    get_available_moves(game.board).forEach(function iterateMoves (move) {
-
-        possibleGame = get_new_state.call(game, move);
-
-        scores.push(minimax(possibleGame));
-        
-        moves.push(move);
-    }, this)
-}
-
-minimax(game);
-console.log(minimax.scores);
-console.log(minimax.moves);
 // let scoreGameTemp = minimax(game);
 // console.log(score);
 // console.log(get_available_moves(game.board));
