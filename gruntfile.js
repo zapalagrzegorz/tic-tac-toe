@@ -95,7 +95,7 @@ module.exports = function (grunt) {
                 sourceMap: false,
                 includePaths: [
                     // 'bower_components/font-awesome/scss',
-                    'bower_components/bootstrap/scss'
+                    'node_modules/bootstrap/scss'
                 ]
             },
             dev: {
