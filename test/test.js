@@ -17,7 +17,7 @@ class Computer {
     constructor () {
         this.choice = 0;
     }
-    setScore (game) {
+    static setScore (game) {
         let draw = 0;
         let successPlayerVertical = 0;
         let successPlayerHorizontal = 0;
@@ -165,33 +165,62 @@ class Computer {
 let computer = new Computer;
 
 let gameReal = {
-    player: 0,
+    player: '',
     opponent: 1,
-    current: 1,
-    board: [ [2, 2, 2], [2, 0, 2], [2, 2, 2] ]
+    current: 0,
+    board: [ [2, 2, 2], [2, 0, 2], [2, 2, 2] ],
+    result: 0
 };
 
-computer.minimax(gameReal);
-// początek gry - wybierz kółko lub krzyżyk
-// gra
-// ponowna gra?
-while ( computer.setScore(gameReal) == undefined) {
-    computer.minimax(gameReal);
-    gameReal.board[ computer.choice[0] ] [ computer.choice[1] ] = 1;
-    console.log('computer.choice: ' + computer.choice);
-    console.log('board: ' + gameReal.board);
 
-    while (true) {
-        var nums = prompt('player move - 2 nums: ');
-        console.log('player.move: ' + nums[0] + ' ' + nums[1]);
-        if ( gameReal.board[ nums[0] ] [ nums[1] ] == 2 ) {
-            gameReal.board[ nums[0]] [ nums[1] ] = 0;
+function init () {
+    while (gameReal.player !== 1 || gameReal.player !== 0) {
+        gameReal.player = Number(prompt('Cross \'1\' or circle \'0\'?'));
+    }
+    gameReal.opponent = !gameReal.player;
+    gameReal.board = [ [2, 2, 2], [2, 2, 2], [2, 2, 2] ];
+    // clearView();
+}
+
+document.addEventListener('DOMContentLoaded', function (event) {
+    ( function () {
+    // początek gry - wybierz kółko lub krzyżyk
+        init();
+
+    // gra
+        while ( Computer.setScore(gameReal) == undefined ) {
+            computer.minimax(gameReal);
+            gameReal.board[ computer.choice[0] ] [ computer.choice[1] ] = 1;
+            console.log('computer.choice: ' + computer.choice);
+            console.log('board: ' + gameReal.board);
+            if (Computer.setScore(gameReal) != undefined) {
+                break;
+            }  
+            while (true) {
+                var nums = prompt('player move - 2 nums: ');
+                console.log('player.move: ' + nums[0] + ' ' + nums[1]);
+                if ( gameReal.board[ nums[0] ] [ nums[1] ] == 2 ) {
+                    gameReal.board[ nums[0]] [ nums[1] ] = 0;
+                    break;
+                }
+            }
+            console.log('board: ' + gameReal.board);
+        }
+
+        switch (Computer.setScore(gameReal)) {
+        case 1:
+            break;
+        case 0:
+            break;
+        case -1:
             break;
         }
-    }
-    console.log('board: ' + gameReal.board);
-}
-console.log('board: ' + gameReal.board);
+
+    });
+});
+
+
+
 
 // let scoreGameTemp = minimax(game);
 // console.log(score);
