@@ -2,27 +2,27 @@
 
 html {
     color: #222;
-    font-size: 1em;
+    font-size: 62.5%;
     line-height: 1.4;
 }
 
 /* ==========================================================================
    Bootstrap 
    ========================================================================== */
-// @import "variables";
-// @import "mixins";
-// @import "custom";
+@import "variables";
+@import "mixins";
+@import "custom";
 
 // Reset and dependencies
-// @import "normalize";
-// @import "print";
+@import "normalize";
+@import "print";
 
 // Core CSS
 // @import "reboot";
 // @import "type";
 // @import "images";
 // @import "code";
-// @import "grid";
+@import "grid";
 // @import "tables";
 // @import "forms";
 // @import "buttons";
@@ -54,7 +54,7 @@ html {
 // @import "carousel";
 
 // Utility classes
-// @import "utilities";
+@import "utilities";
 
 
 /* ==========================================================================

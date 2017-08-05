@@ -1,0 +1,48 @@
+section>div>div {
+    border: 1px solid black;
+}
+
+svg.icon {
+    width: 7rem;
+    height: 7rem;
+    fill: grey;
+    @include media-breakpoint-up(xs) {
+        width: 8rem;
+        height: 8rem;
+        // fill: grey;
+    }
+    @include media-breakpoint-up(sm) {
+        width: 7rem;
+        height: 7rem;
+        // fill: brown;
+    }
+    @include media-breakpoint-up(md) {
+        width: 9rem;
+        height: 9rem;
+        // fill: blue;
+    }
+    @include media-breakpoint-up(lg) {
+        width: 11rem;
+        height: 11rem;
+        // fill: green;
+    }
+    @include media-breakpoint-up(xl) {
+        width: 13rem;
+        height: 13rem;
+        // fill: sienna;
+    }
+}
+
+.target {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding: 1rem;
+}
+
+@media (max-width: 320px) {
+    svg.icon {
+        width: 5rem;
+        height: 5rem;
+        fill: grey;
+    }
+}
