@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../build/css/main.css">
     <!-- <script src="../node_modules/qunitjs/qunit/qunit.js"></script> -->
     <!--C:\Users\GZ\Documents\II\FCC\TicTacToe\node_modules\qunitjs\qunit\qunit.js-->
-    <script src="test.js"></script>
+    <script src="test\test.js"></script>
 </head>
 
 <body>
@@ -91,15 +91,15 @@
     </section>
     <div class="modal">
         <div class="modal__sandbox"></div>
-        <article class="modal__content">
+        <article id="initBox" class="modal__content">
             <h2>start TicTacToe as</h2>
-            <button class="btn" id="player-circle"> 
+            <button class="btn" id="playerCircle">0 
                 <svg class="icon icon-circle">
-                    <use xlink:href="#circle" />
+                    <use xlink:href="#circle"  />
                 </svg>
             </button>
-            <button class="btn" id="player-cross">
-                <svg class="icon icon-shapes">
+            <button class="btn" id="playerCross">1
+                <svg class="icon icon-shapes" >
                     <use xlink:href="#shapes" />
                 </svg>
             </button>
