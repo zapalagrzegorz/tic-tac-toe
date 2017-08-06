@@ -1,48 +1,137 @@
+* {
+    box-sizing: border-box;
+}
+
 section>div>div {
     border: 1px solid black;
 }
 
-svg.icon {
-    width: 7rem;
-    height: 7rem;
-    fill: grey;
-    @include media-breakpoint-up(xs) {
-        width: 8rem;
-        height: 8rem;
-        // fill: grey;
+.board {
+    svg.icon {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        width: 7.4rem;
+        height: 6rem; // fill: grey;
+        fill: grey;
+        @include media-breakpoint-up(xs) {
+            width: 8rem;
+            height: 8rem; // fill: grey;
+        }
+        @include media-breakpoint-up(sm) {
+            width: 7rem;
+            height: 7rem; // fill: brown;
+        }
+        @include media-breakpoint-up(md) {
+            width: 9rem;
+            height: 9rem; // fill: blue;
+        }
+        @include media-breakpoint-up(lg) {
+            width: 11rem;
+            height: 11rem; // fill: green;
+        }
+        @include media-breakpoint-up(xl) {
+            width: 13rem;
+            height: 13rem; // fill: sienna;
+        }
     }
-    @include media-breakpoint-up(sm) {
-        width: 7rem;
-        height: 7rem;
-        // fill: brown;
+    .board__field {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
     }
     @include media-breakpoint-up(md) {
-        width: 9rem;
-        height: 9rem;
-        // fill: blue;
-    }
-    @include media-breakpoint-up(lg) {
-        width: 11rem;
-        height: 11rem;
-        // fill: green;
-    }
-    @include media-breakpoint-up(xl) {
-        width: 13rem;
-        height: 13rem;
-        // fill: sienna;
+        max-width: 60%;
     }
 }
 
-.target {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    padding: 1rem;
-}
-
-@media (max-width: 320px) {
-    svg.icon {
-        width: 5rem;
-        height: 5rem;
-        fill: grey;
+.modal {
+    display: initial;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0%;
+    top: 0%;
+    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, .3);
+    &__sandbox {}
+    &__content {
+        position: absolute;
+        width: 80%;
+        left: 10%;
+        top: 15%;
+        background: #070000;
+        transform: rotateY(90deg);
+        /* fallback for old browsers */
+        background: -webkit-linear-gradient(to bottom, #070000, #4285F4, #070000);
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to bottom, #070000, #4285F4, #070000);
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        // background-color: #4285F4 #EA4335 color: white;
+        padding: 2rem;
+        text-align: center;
+        color: white;
+        border-top-left-radius: 60px;
+        border-bottom-right-radius: 60px;
+        transition: .5s;
+        @include media-breakpoint-up(md) {
+            width: 70%;
+            left: 15%;
+        }
+        @include media-breakpoint-up(lg) {
+            width: 64%;
+            left: 18%;
+        }
+        @include media-breakpoint-up(xl) {
+            width: 60%;
+            left: 20%;
+        }
+    }
+    .btn {
+        background: rgba(0, 0, 0, 0);
+        border: 1px solid white;
+        margin-top: 1rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        transition-duration: .1s;
+        &:hover svg {
+            stroke: none;
+            stroke-width: 0;
+            stroke-dasharray: 0;
+        }
+        &:first-of-type:hover {
+            border-color: #34A853;
+            svg.icon-circle {
+                fill: #34A853;
+            }
+        }
+        &:nth-of-type(2):hover {
+            border-color: #E15846;
+            svg.icon-shapes {
+                fill: #E15846;
+            }
+        }
+        @include media-breakpoint-up(md) {
+            margin: 2rem 3rem
+        }
+        @include media-breakpoint-up(lg) {
+            margin: 3rem 6rem;
+        }
+    }
+    svg {
+        height: 4rem;
+        width: 4rem;
+        fill: none;
+        stroke: #FFF;
+        stroke-width: 3px;
+        stroke-dasharray: 2, 1;
+        stroke-linejoin: round;
+        transition: .1s;
+        @include media-breakpoint-up(sm) {
+            height: 6rem;
+            width: 6rem;
+        }
+        @include media-breakpoint-up(md) {
+            height: 8rem;
+            width: 8rem;
+        }
     }
 }
