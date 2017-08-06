@@ -12,8 +12,8 @@ module.exports = function (grunt) {
     grunt.initConfig({
         watch: {
             scripts: {
-                files: ['dev/js/*.js'],
-                tasks: ['js']
+                files: ['dev/js/*.js', 'test/*.js'],
+                tasks: ['babel:dev']
             },
             sass: {
                 files: ['dev/css/*.scss'],
@@ -31,7 +31,8 @@ module.exports = function (grunt) {
                     src: [
                         'build/css/*.css',
                         'build/js/*.js',
-                        '*.html'
+                        '*.html',
+                        'test/*.js'
                     ]
                 },
                 options: {

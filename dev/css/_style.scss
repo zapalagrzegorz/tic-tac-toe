@@ -60,21 +60,19 @@ section>div>div {
         top: 15%;
         background: #070000;
         transform: rotateY(90deg);
-        /* fallback for old browsers */
-        background: -webkit-linear-gradient(to bottom, #070000, #4285F4, #070000);
-        /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to bottom, #070000, #4285F4, #070000);
-        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-        // background-color: #4285F4 #EA4335 color: white;
         padding: 2rem;
         text-align: center;
         color: white;
         border-top-left-radius: 60px;
         border-bottom-right-radius: 60px;
-        transition: .5s;
+        transition: 1.1s;
+        @include media-breakpoint-up(xxs) {
+            background: linear-gradient(to bottom, #070000 20%, #4285F4, #070000);
+        }
         @include media-breakpoint-up(md) {
             width: 70%;
             left: 15%;
+            background: linear-gradient(to bottom, #070000 15%, #4285F4, #070000);
         }
         @include media-breakpoint-up(lg) {
             width: 64%;

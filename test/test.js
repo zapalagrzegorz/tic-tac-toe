@@ -183,11 +183,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
         current: 0,
         board: [[2, 2, 2], [2, 2, 2], [2, 2, 2]],
         result: 0,
-        setPlayer : function (choice, event) {
+        setPlayer: function (choice, event) {
             this.player = choice;
             this.opponent = (this.player) ? 0 : 1;
             initTextBox.style.transform = 'rotateY(90deg)';
-            setTimeout( () => modalBox.style.display = 'none', 500);
+            setTimeout(() => modalBox.style.display = 'none', 1100);
         }
     };
     /**
@@ -197,14 +197,15 @@ document.addEventListener('DOMContentLoaded', function (event) {
     function init () {
         modalBox.style.display = 'initial';
         gameReal.board = [[2, 2, 2], [2, 2, 2], [2, 2, 2]];
-        initTextBox.style.transform = 'rotateY(0deg)';
+        // initTextBox.style.transform = 'rotateY(0)';
+        setTimeout( () => initTextBox.style.transform = 'rotateY(0)', 0);
     }
 
     // elements
     // początek gry - wybierz kółko lub krzyżyk
-    
+
     //  inicjalizacja
-    ( ()=> {
+    (() => {
         playerCircle.addEventListener('click', gameReal.setPlayer.bind(gameReal, 0), false);
         playerCross.addEventListener('click', gameReal.setPlayer.bind(gameReal, 1), false);
     })();
