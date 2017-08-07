@@ -17,10 +17,6 @@ section>div>div {
             width: 8rem;
             height: 8rem; // fill: grey;
         }
-        @include media-breakpoint-up(sm) {
-            width: 7rem;
-            height: 7rem; // fill: brown;
-        }
         @include media-breakpoint-up(md) {
             width: 9rem;
             height: 9rem; // fill: blue;
@@ -37,6 +33,34 @@ section>div>div {
     .board__field {
         padding-top: 1rem;
         padding-bottom: 1rem;
+        @include media-breakpoint-up(xxs) {
+            min-width: 8rem;
+            min-height: 8.6rem; // fill: grey;
+        }
+        @include media-breakpoint-up(xs) {
+            min-width: 8rem;
+            min-height: 10.6rem; // fill: grey;
+        }
+        // 576px
+        @include media-breakpoint-up(sm) {
+            min-width: 7rem;
+            min-height: 10.6rem; // fill: brown;
+        }
+        // 768px
+        @include media-breakpoint-up(md) {
+            min-width: 9rem;
+            min-height: 11.6rem; // fill: blue;
+        }
+        // 992px
+        @include media-breakpoint-up(lg) {
+            min-width: 11rem;
+            min-height: 13.6rem; // fill: green;
+        }
+        // 1200px
+        @include media-breakpoint-up(xl) {
+            min-width: 13rem;
+            min-height: 15.6rem; // fill: sienna;
+        }
     }
     @include media-breakpoint-up(md) {
         max-width: 60%;

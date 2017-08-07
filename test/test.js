@@ -1,4 +1,11 @@
+/********************* TO DO  */
+// Uncaught TypeError: this.setScore is not a function
+//     at Computer.minimax (test.js:145)
+//     at Object.setPlayerField (test.js:203)
 
+// dalszy workflow gry: koloryzowanie znaków
+// zaznaczanie znaku komputera 
+// sprawdzenie zwycięscy - komunikat
 
 //  board is 2d arr 
 // var board = [[0, 2, 0], [1, 2, 1], [1, 0, 2]];
@@ -176,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
     let modalBox = document.querySelector('.modal');
     let playerCircle = document.querySelector('#playerCircle');
     let playerCross = document.querySelector('#playerCross');
+    let boardFields = document.querySelectorAll('.board__field');
 
     let gameReal = {
         player: 0,
@@ -183,22 +191,34 @@ document.addEventListener('DOMContentLoaded', function (event) {
         current: 0,
         board: [[2, 2, 2], [2, 2, 2], [2, 2, 2]],
         result: 0,
-        setPlayer: function (choice, event) {
+        setPlayer: function (choice) {
             this.player = choice;
             this.opponent = (this.player) ? 0 : 1;
             initTextBox.style.transform = 'rotateY(90deg)';
             setTimeout(() => modalBox.style.display = 'none', 1100);
+        },
+        setPlayerField: function (event) {
+            let playerField = event.target;
+            if (playerField.dataset.field != undefined) {
+                this.board[playerField.dataset.field[0]][playerField.dataset.field[1]] = this.player;
+                if (this.player) {
+                    playerField.innerHTML = '<svg class="icon icon-shapes"><use xlink:href="#shapes"/></svg>';
+                } else {
+                    playerField.innerHTML = '<svg class="icon"><use xlink:href="#circle"/></svg>';
+                }
+                computer.minimax(gameReal);
+            }
         }
     };
     /**
-   * Methods
-   */
+    * Methods
+    */
 
     function init () {
         modalBox.style.display = 'initial';
         gameReal.board = [[2, 2, 2], [2, 2, 2], [2, 2, 2]];
-        // initTextBox.style.transform = 'rotateY(0)';
-        setTimeout( () => initTextBox.style.transform = 'rotateY(0)', 0);
+        // bez timeout'u wyświetla odrazu i nie ma efektu transition
+        setTimeout(() => initTextBox.style.transform = 'rotateY(0)', 1);
     }
 
     // elements
@@ -206,29 +226,28 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     //  inicjalizacja
     (() => {
+        // addeventListener podpina samą funkcję, bez obiektu, który posiada daną metodę, this
+        //  jest w tym przypadku dany element. Stąd trzeba ręcznie this ustawić na obiekt metody
         playerCircle.addEventListener('click', gameReal.setPlayer.bind(gameReal, 0), false);
         playerCross.addEventListener('click', gameReal.setPlayer.bind(gameReal, 1), false);
+        boardFields.forEach((value) => value.addEventListener('click', gameReal.setPlayerField.bind(gameReal), false));
     })();
-    init();
 
-    // gra
+    // ciag programu
+    init();
+    if (gameReal.player == 1) {
+        computer.minimax(gameReal);
+    }
+
     // while (Computer.setScore(gameReal) == undefined) {
-    //     computer.minimax(gameReal);
-    //     gameReal.board[computer.choice[0]][computer.choice[1]] = 1;
-    //     console.log('computer.choice: ' + computer.choice);
-    //     console.log('board: ' + gameReal.board);
+    //     if (gameReal.player == 0) {
+    //         player.move();
+    //     } else {
+    //         computer.minimax(gameReal);
+    //     }
     //     if (Computer.setScore(gameReal) != undefined) {
     //         break;
     //     }
-    //     while (true) {
-    //         var nums = prompt('player move - 2 nums: ');
-    //         console.log('player.move: ' + nums[0] + ' ' + nums[1]);
-    //         if (gameReal.board[nums[0]][nums[1]] == 2) {
-    //             gameReal.board[nums[0]][nums[1]] = 0;
-    //             break;
-    //         }
-    //     }
-    //     console.log('board: ' + gameReal.board);
     // }
 
     switch (Computer.setScore(gameReal)) {
