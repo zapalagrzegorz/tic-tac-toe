@@ -25,7 +25,7 @@
         "keyword-spacing": ["error", 
             { "before": true, "after": true}
         ],
-        "eqeqeq": ["warn"],
+        "eqeqeq": ["error"],
 
         "space-before-function-paren": ["error", "always"],
         "comma-spacing": ["error"],
