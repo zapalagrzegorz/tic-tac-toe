@@ -150,8 +150,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return availableMoves;
         }
         /**
-         * Funkcja pomocnicza
-         * Generuje nowy stan gry
+         * Funkcja pomocnicza dla algorytmu minimax
+         * Generuje wariant stanu gry 
          * @param {number[]} move 
          * @param {Object} game 
          */
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         /**
          * ustawia wartość gracza oraz komputera 
-         * @param {number} choice 
+         * @param {number} choice
          */
         setPlayer: function (choice) {
             this.player = choice;
@@ -258,31 +258,41 @@ document.addEventListener('DOMContentLoaded', function () {
                 gameReal.setComputerField([1, 1]);
             }
         },
+
         /**
-         * ustawia pole wartością gracza
+         * zaznacza pole na planszy wartością gracza
          * 
          */
         setPlayerField: function (event) {
             let playerField = event.target;
             let result;
+            let row;
+            let column; 
 
+            // jeżeli zostało wybrane pole
             if (playerField.dataset.field !== undefined) {
-                this.board[playerField.dataset.field[0]][playerField.dataset.field[1]] = this.player;
+                row = playerField.dataset.field[0];
+                column = playerField.dataset.field[1];
+            }
+            // sprawdzam czy docelowe pole nie zostało zajęte
+            // wartość dwa to umowna wartość wolnego pola
+            if ( 2 ===  this.board[row][column]) {
+                this.board[row][column] = this.player;
                 if (this.player) {
                     playerField.innerHTML = '<svg class="icon icon-shapes"><use xlink:href="#shapes"/></svg>';
                 } else {
                     playerField.innerHTML = '<svg class="icon"><use xlink:href="#circle"/></svg>';
                 }
+                // FIXME wyciagnąć jako funkcję, jeśli racjonalne
+                result = Computer.setScore(gameReal);
+                if (result === undefined) {
+                    computer.minimax(gameReal);
+                    // nie powinien robić np. computer?
+                    gameReal.setComputerField(computer.choice);
+                } else {
+                    console.log(result);
+                }
             }
-            // FIXME wyciagnąć jako funckję
-            result = Computer.setScore(gameReal);
-            if (result === undefined) {
-                computer.minimax(gameReal);
-                gameReal.setComputerField(computer.choice);
-            } else {
-                console.log(result);
-            }
-
         },
         /**
          * ustawia pole wartością komputera
