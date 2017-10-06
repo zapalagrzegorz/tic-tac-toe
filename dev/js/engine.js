@@ -42,9 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
         activeTurn: 0,
         notActive: 0,
         board: [
-            [2, 1, 1],
-            [2, 2, 0],
-            [1, 2, 0]
+            [2, 2, 2],
+            [2, 2, 2],
+            [2, 2, 2]
         ],
         result: 0,
         elements: {
@@ -209,5 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
         gameReal.elements.finalBox.classList.toggle('visible');
         setTimeout( () => modalBox.style.display = 'none', 1500 );
     }
+
+    
     init();
 });
