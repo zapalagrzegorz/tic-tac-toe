@@ -3,7 +3,7 @@
  * może exporcik :-)
  */
 class Computer {
-    constructor() {
+    constructor () {
         // kluczowa tablica przechowująca 'najlepszy' ruch
         this.choice = [];
     }
@@ -25,7 +25,7 @@ class Computer {
      * @param {object} game 
      * @return {number} The x value.
      */
-    static setScore(game) {
+    static setScore (game) {
         let draw = 0;
         let successPlayerVertical = 0;
         let successPlayerHorizontal = 0;
@@ -36,17 +36,18 @@ class Computer {
         let successPlayerDiagonalRev = 0;
         let successOpponentDiagonalRev = 0;
 
+        // if game player cannot win, we could skip him
         // check column and row
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                if (game.board[i][j] === game.player) {
+                if (game.board[i][j] === game.current) {
                     successPlayerVertical++;
                     if (successPlayerVertical === 3) {
                         // console.log('successPlayerVertical');
                         return 1;
                     }
                 }
-                if (game.board[j][i] === game.player) {
+                if (game.board[j][i] === game.current) {
                     successPlayerHorizontal++;
                     if (successPlayerHorizontal === 3) {
                         // console.log('successPlayerHorizontal');
@@ -78,7 +79,7 @@ class Computer {
 
         // diagonal forward
         for (let i = 0; i < 3; i++) {
-            if (game.board[i][i] === game.player) {
+            if (game.board[i][i] === game.current) {
                 successPlayerDiagonal++;
                 if (successPlayerDiagonal === 3) {
                     // console.log('successPlayerDiagonal');
@@ -95,7 +96,7 @@ class Computer {
         }
         // diagonal backward
         for (let i = 2, j = 0; i >= 0; i--, j++) {
-            if (game.board[i][j] === game.player) {
+            if (game.board[i][j] === game.current) {
                 successPlayerDiagonalRev++;
                 if (successPlayerDiagonalRev === 3) {
                     // console.log('successPlayerDiagonalBackward');
@@ -123,7 +124,7 @@ class Computer {
      * number[]
      * @param {Object} game 
      */
-    get_available_moves(game) {
+    getAvailableMoves (game) {
         let availableMoves = [];
         for (let i = 0; i <= 2; i++) {
             for (let j = 0; j <= 2; j++) {
@@ -140,7 +141,7 @@ class Computer {
      * @param {number[]} move 
      * @param {Object} game 
      */
-    get_new_state (move, game) {
+    getNewState (move, game) {
         // kopiowanie tworzy referencję
         // for(var prop in this){
         //     newGame[prop] = this[prop];
@@ -148,23 +149,21 @@ class Computer {
         // aby zrobić deep copy MDN rekomenduje parse i stringify obiektu JSON
         let newGame = JSON.parse(JSON.stringify(game));
 
-        
-        newGame.board[move[0]][move[1]] = newGame.current;
+        newGame.board[move[0]][move[1]] = newGame.activeTurn;
         // kolejny ruch wykonuje drugi z graczy
-        newGame.current = (newGame.current === 1) ? 0 : 1;
+        newGame.activeTurn = (newGame.activeTurn === 1) ? 0 : 1;
+        // newGame.notActive = (newGame.activeTurn === 1) ? 0 : 1;
 
         return newGame;
     }
     /**
-     * FIXME :(
-     * MINIMAX NIE DZIAŁA gdy gram kółkiem
      * 
      * Wyznacza ruch komputera na podstawie algorytmu minimax
      * Wynik jest zapisywany we właściwości choice
      * @param {object} game
      * @return {number} The x value.
      */
-    minimax(game) {
+    minimax (game) {
         
         // return score if game over
         let score = Computer.setScore(game);
@@ -174,9 +173,9 @@ class Computer {
         let moves = [];
 
         // Populate the scores array, recursing as needed
-        this.get_available_moves(game).forEach(function iterateMoves(move) {
+        this.getAvailableMoves(game).forEach(function iterateMoves (move) {
 
-            let possibleGame = this.get_new_state(move, game);
+            let possibleGame = this.getNewState(move, game);
 
             scores.push(this.minimax(possibleGame));
 
@@ -187,7 +186,7 @@ class Computer {
         // This is the max calculation
         // TODO - styl zmiennych i nazw funkcji
         // 
-        if (game.current === game.player) {
+        if (game.activeTurn === game.current) {
             let max_score_index = scores.indexOf(Math.max(...scores));
 
             this.choice = moves[max_score_index];

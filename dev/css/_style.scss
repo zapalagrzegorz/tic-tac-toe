@@ -3,38 +3,46 @@
 }
 
 @keyframes example {
-    0%   {transform: rotateY(90deg);}
-    100% {transform: rotateY(0deg);}
+    0% {
+        transform: rotateY(90deg);
+    }
+    100% {
+        transform: rotateY(0deg);
+    }
 }
-
-
 
 section>div>div {
     border: 1px solid black;
 }
 
 .board {
-    svg.icon {
+    &__icon {
         padding-top: 1rem;
         padding-bottom: 1rem;
         width: 7.4rem;
-        height: 6rem; // fill: grey;
+        height: 6rem;
         fill: grey;
         @include media-breakpoint-up(xs) {
             width: 8rem;
-            height: 8rem; // fill: grey;
+            height: 8rem;
         }
         @include media-breakpoint-up(md) {
             width: 9rem;
-            height: 9rem; // fill: blue;
+            height: 9rem;
         }
         @include media-breakpoint-up(lg) {
             width: 11rem;
-            height: 11rem; // fill: green;
+            height: 11rem;
         }
         @include media-breakpoint-up(xl) {
             width: 13rem;
-            height: 13rem; // fill: sienna;
+            height: 13rem;
+        }
+        &--circle {
+            fill: #34A853;
+        }
+        &--shapes {
+            fill: #E15846;
         }
     }
     .board__field {
@@ -42,36 +50,33 @@ section>div>div {
         padding-bottom: 1rem;
         @include media-breakpoint-up(xxs) {
             min-width: 8rem;
-            min-height: 8.6rem; // fill: grey;
+            min-height: 8.6rem; 
         }
         @include media-breakpoint-up(xs) {
             min-width: 8rem;
-            min-height: 10.6rem; // fill: grey;
-        }
-        // 576px
+            min-height: 10.6rem;
+        } 
         @include media-breakpoint-up(sm) {
             min-width: 7rem;
-            min-height: 10.6rem; // fill: brown;
-        }
-        // 768px
+            min-height: 10.6rem;
+        } 
         @include media-breakpoint-up(md) {
             min-width: 9rem;
-            min-height: 11.6rem; // fill: blue;
-        }
-        // 992px
+            min-height: 11.6rem; 
+        } 
         @include media-breakpoint-up(lg) {
             min-width: 11rem;
-            min-height: 13.6rem; // fill: green;
-        }
-        // 1200px
+            min-height: 13.6rem;
+        } 
         @include media-breakpoint-up(xl) {
             min-width: 13rem;
-            min-height: 15.6rem; // fill: sienna;
+            min-height: 15.6rem;
         }
     }
     @include media-breakpoint-up(md) {
         max-width: 60%;
     }
+
 }
 
 .modal {
@@ -109,12 +114,11 @@ section>div>div {
         @include media-breakpoint-up(lg) {
             width: 64%;
             left: 18%;
-        }   
+        }
         @include media-breakpoint-up(xl) {
             width: 60%;
             left: 20%;
         }
-
     }
     .btn {
         background: rgba(0, 0, 0, 0);
@@ -166,6 +170,7 @@ section>div>div {
         }
     }
 }
-.example {
+
+.visible {
     transform: rotateY(0deg);
 }

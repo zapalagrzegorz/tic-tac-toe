@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // blok okalający wartości
     const initTextBox = document.querySelector('#initBox');
 
+    const finalBox__result = document.querySelector('#finalBox__result');
+    const finalBox__tryAgain = document.querySelector('#finalBox__tryAgain');
+
     // znak do wyboru przez gracza
     const playerCircle = document.querySelector('#playerCircle');
     const playerCross = document.querySelector('#playerCross');
@@ -36,10 +39,12 @@ document.addEventListener('DOMContentLoaded', function () {
         player: 0,
         opponent: 0,
         current: 0,
+        activeTurn: 0,
+        notActive: 0,
         board: [
-            [2, 2, 2],
-            [2, 2, 2],
-            [2, 2, 2]
+            [2, 1, 1],
+            [2, 2, 0],
+            [1, 2, 0]
         ],
         result: 0,
         elements: {
@@ -54,13 +59,23 @@ document.addEventListener('DOMContentLoaded', function () {
         setPlayer: function (choice) {
             this.player = choice;
             this.opponent = (this.player) ? 0 : 1;
+            this.activeTurn = 0;
+            this.notActive = 1;
+            
             this.animateInitBox();
             if (this.player === 1) {
-
+                this.current = 0;
+                this.opponent = 1;
+                computer.minimax(gameReal);
+                // nie powinien robić np. computer?
+                // TODO a może setField(komputer/gracz, wartość computer.minimax(gameReal);
+                // nie powinien robić np. computer?
+                // TODO a może setField(komputer/gracz, wartość)
+                gameReal.setComputerField(computer.choice);
                 // pierwszy ruch komputera to środkowe pole
                 // nie wiem czemu pierwsza kalkulacja trwa tak długo :(
                 // TODO
-                gameReal.setComputerField([1, 1]);
+                // gameReal.setComputerField([1, 1]);
             }
         },
 
@@ -82,23 +97,27 @@ document.addEventListener('DOMContentLoaded', function () {
             // sprawdzam czy docelowe pole nie zostało zajęte
             // wartość dwa to umowna wartość wolnego pola
             if ( 2 ===  this.board[row][column]) {
-                this.board[row][column] = this.player;
-                if (this.player) {
-                    playerField.innerHTML = '<svg class="icon icon-shapes"><use xlink:href="#shapes"/></svg>';
+                this.board[row][column] = this.current;
+                if (this.current) {
+                    playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
                 } else {
-                    playerField.innerHTML = '<svg class="icon"><use xlink:href="#circle"/></svg>';
+                    playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
                 }
+                this.current = this.opponent;
                 // TODO wyciagnąć jako funkcję, jeśli racjonalne
                 result = Computer.setScore(gameReal);
                 if (result === undefined) {
                     gameReal.current = gameReal.opponent;
                     computer.minimax(gameReal);
                     // nie powinien robić np. computer?
+                    // TODO a może setField(komputer/gracz, wartość computer.minimax(gameReal);
+                    // nie powinien robić np. computer?
                     // TODO a może setField(komputer/gracz, wartość)
                     gameReal.setComputerField(computer.choice);
                 } else {
                     // FIXME funkcja końcowa
-                    this.animateFinalBox();
+                    // finalBox__result
+                    this.prepareFinalBox(result);
                 }
             }
         },
@@ -107,26 +126,27 @@ document.addEventListener('DOMContentLoaded', function () {
          * 
          */
         setComputerField: function (arr) {
-            this.board[arr[0]][arr[1]] = this.opponent;
+            this.board[arr[0]][arr[1]] = this.current;
             let computerField = document.querySelector('[data-field="' + arr[0] + arr[1] + '"]');
             let result = undefined;
             // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
             // np. przy inicjalizacji
-            if (this.opponent) {
-                computerField.innerHTML = '<svg class="icon icon-shapes"><use xlink:href="#shapes"/></svg>';
+            if (this.current) {
+                computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
             } else {
-                computerField.innerHTML = '<svg class="icon"><use xlink:href="#circle"/></svg>';
+                computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
             }
             result = Computer.setScore(gameReal);
             if (result !== undefined) {
-                this.animateFinalBox();
+                this.prepareFinalBox(result);
             }
+            this.current = this.player;
         },
         /**
          * wywołuje animację dla inicjalnego dialogu
          */
         animateInitBox: function () {
-            initTextBox.classList.toggle('example');
+            initTextBox.classList.toggle('visible');
             // chowanie modalu po animacji
             setTimeout(() => modalBox.style.display = 'none', 1500);
         },
@@ -135,10 +155,20 @@ document.addEventListener('DOMContentLoaded', function () {
          * wywołuje animację dla inicjalnego dialogu
          */
         animateFinalBox: function () {
-            modalBox.style.display = 'inital';
-            gameReal.elements.finalBox.classList.toggle('example');
-            // chowanie modalu po animacji
-            // setTimeout(() => modalBox.style.display = 'none', 1500);
+            modalBox.style.display = 'block';
+            // gameReal.elements.finalBox.style.transform = 'rotateY(89deg)';
+            setTimeout( function () {
+                gameReal.elements.finalBox.classList.toggle('visible');
+            }, 4000);
+        },
+        /**
+         * 
+         * @param {number} result 
+         */
+        prepareFinalBox: function (result) {
+            const winner = result ? 'computer wins' : 'draw';
+            finalBox__result.textContent = winner;
+            this.animateFinalBox();
         }
     };
 
@@ -147,13 +177,8 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function init () {
         modalBox.style.display = 'initial';
-        gameReal.board = [
-            [2, 2, 2],
-            [2, 2, 2],
-            [2, 2, 2]
-        ];
 
-        initTextBox.classList.toggle('example');
+        initTextBox.classList.toggle('visible');
 
         /**
          * addeventListener podpina samą funkcję, bez obiektu, który posiada daną metodę, wskaźnik 'this' jest wówczas ustawiony na dany element, tu np. playerCircle. 
@@ -165,7 +190,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // dla każego pola gry podpinamy dla eventu click metodę setPlayerField (ustawiajac this na obiekt gameReal)
         boardFields.forEach((value) => value.addEventListener('click', gameReal.setPlayerField.bind(gameReal), false));
+        finalBox__tryAgain.addEventListener('click', replay);
     }
+    function replay () {
+        gameReal.board = [
+            [2, 2, 2],
+            [2, 2, 2],
+            [2, 2, 2]
+        ];
+        gameReal.player = 0;
+        gameReal.opponent = 0;
+        gameReal.current = 0;
+        gameReal.result = 0;
+        boardFields.forEach((value)=> {
+            value.innerHTML = '';
+        });
 
+        gameReal.elements.finalBox.classList.toggle('visible');
+        setTimeout( () => modalBox.style.display = 'none', 1500 );
+    }
     init();
 });
