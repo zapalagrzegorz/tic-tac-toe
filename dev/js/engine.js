@@ -37,8 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // globalna zmienna przechowujaca ustawienia gry
     let gameReal = {
         player: 0,
-        opponent: 0,
+        computer: 0,
         current: 0,
+        opponent: 1,
         activeTurn: 0,
         notActive: 0,
         board: [
@@ -58,14 +59,12 @@ document.addEventListener('DOMContentLoaded', function () {
          */
         setPlayer: function (choice) {
             this.player = choice;
-            this.opponent = (this.player) ? 0 : 1;
-            this.activeTurn = 0;
-            this.notActive = 1;
+            this.computer = (this.player === 1) ? 0 : 1;
             
             this.animateInitBox();
             if (this.player === 1) {
-                this.current = 0;
-                this.opponent = 1;
+                this.current = this.computer;
+                this.opponent = this.player;
                 computer.minimax(gameReal);
                 // nie powinien robić np. computer?
                 // TODO a może setField(komputer/gracz, wartość computer.minimax(gameReal);
@@ -103,11 +102,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
                 }
-                this.current = this.opponent;
+                
                 // TODO wyciagnąć jako funkcję, jeśli racjonalne
                 result = Computer.setScore(gameReal);
                 if (result === undefined) {
-                    gameReal.current = gameReal.opponent;
+                    this.current = this.computer;
+                    this.opponent = this.player;
+                    this.activeTurn = this.current;
                     computer.minimax(gameReal);
                     // nie powinien robić np. computer?
                     // TODO a może setField(komputer/gracz, wartość computer.minimax(gameReal);
@@ -153,13 +154,14 @@ document.addEventListener('DOMContentLoaded', function () {
         /**
          * TODO już czuć elementy wspólne
          * wywołuje animację dla inicjalnego dialogu
+         * @param {number} time - czas do uruchomienia końcowej animacji 
          */
-        animateFinalBox: function () {
+        animateFinalBox: function (time) {
             modalBox.style.display = 'block';
             // gameReal.elements.finalBox.style.transform = 'rotateY(89deg)';
             setTimeout( function () {
                 gameReal.elements.finalBox.classList.toggle('visible');
-            }, 4000);
+            }, time);
         },
         /**
          * 
@@ -207,7 +209,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         gameReal.elements.finalBox.classList.toggle('visible');
-        setTimeout( () => modalBox.style.display = 'none', 1500 );
+        setTimeout( () =>  initTextBox.classList.toggle('visible'), 1500 );
+
     }
 
     
