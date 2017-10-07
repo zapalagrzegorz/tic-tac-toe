@@ -1,7 +1,6 @@
 // @ts-check
 
 // dalszy workflow gry:
-// ładowanie pierwszego wyboru pseudo-random dla komputera-kółko
 // masa refaktoru w kodzie: najpierw własne, a potem wg Elii
 // options: koloryzowanie znaków, które wygrały
 
@@ -26,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
         current: 0,
         opponent: 1,
         activeTurn: 0,
-        notActive: 0,
         board: [
             [2, 2, 2],
             [2, 2, 2],
@@ -59,126 +57,80 @@ document.addEventListener('DOMContentLoaded', function () {
             if (this.player === 1) {
                 this.current = this.computer;
                 this.opponent = this.player;
-                // TODO a może setField(komputer/gracz, wartość computer.minimax(gameReal);
                 gameReal.setBoardField(computer.setFirstMove());
             }
         },
 
         /**
-         * zaznacza pole gracza na planszy
-         * @param {object} event mouseEvent
-         */
-        setPlayerField: function (event) {
-            let playerField = event.target;
-            let result;
-            let row;
-            let column;
-
-            // jeżeli zostało wybrane pole
-            if (playerField.dataset.field !== undefined) {
-                row = playerField.dataset.field[0];
-                column = playerField.dataset.field[1];
-            }
-            // sprawdzam czy docelowe pole nie zostało zajęte
-            // wartość dwa to umowna wartość wolnego pola
-            if ( this.board[row][column] === 2) {
-                this.board[row][column] = this.current;
-                if (this.current) {
-                    playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-                } else {
-                    playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-                }
-                
-                // TODO wyciagnąć jako funkcję, jeśli racjonalne
-                result = Computer.setScore(gameReal);
-                if (result === undefined) {
-                    this.current = this.computer;
-                    this.opponent = this.player;
-                    this.activeTurn = this.current;
-                    computer.minimax(gameReal);
-                    gameReal.setBoardField(computer.choice);
-                } else {
-                    // FIXME funkcja końcowa
-                    this.prepareFinalBox(result);
-                }
-            }
-        },
-        /**
          * ustawia pole wartością komputera
-         * @param {number[]} arr 
+         * @param {(object | number[])} data 
          */
-        setComputerField: function (arr) {
-            this.board[arr[0]][arr[1]] = this.current;
-            let computerField = document.querySelector('[data-field="' + arr[0] + arr[1] + '"]');
-            let result = undefined;
-
-            // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
-            // np. przy inicjalizacji
-            if (this.current) {
-                computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-            } else {
-                computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-            }
-            result = Computer.setScore(gameReal);
-            if (result !== undefined) {
-                this.prepareFinalBox(result);
-            }
-            this.current = this.player;
-        },
         setBoardField: function (data) {
-            if (Array.isArray(data)) {
-                // computer
-                this.board[data[0]][data[1]] = this.current;
-                let computerField = document.querySelector('[data-field="' + data[0] + data[1] + '"]');
-                let result = undefined;
-    
-                // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
-                // np. przy inicjalizacji
-                if (this.current) {
-                    computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-                } else {
-                    computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+            let _this = this;
+            let result;
+            let boardField;
+            
+            /**
+             * Sprawdza czy wybrane pole przez użytkownika jest prawidłowe
+             * @param {object} boardField obiekt-właściwość 'target' z MouseEvent, którego źródłem jest click
+             * @returns {boolean}
+             */
+            function isPlayerValidChoice (boardField) {
+                if (boardField.dataset.field !== undefined && _this.board[boardField.dataset.field[0]][boardField.dataset.field[1]] === 2) {
+                    return true;
                 }
-                result = Computer.setScore(gameReal);
+                return false;
+            }
+           
+            if (Array.isArray(data)) {
+            // computer
+
+                this.board[data[0]][data[1]] = this.current;
+                boardField = document.querySelector('[data-field="' + data[0] + data[1] + '"]');
+
+                if (this.current) {
+                    boardField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+                } else {
+                    boardField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+                }
+                result = Computer.getScore(gameReal);
                 if (result !== undefined) {
                     this.prepareFinalBox(result);
                 }
                 this.current = this.player;
+                this.activeTurn = this.current;
+                this.opponent = this.computer;
             } else {
                 // player
-                let playerField = data.target;
-                let result;
+                boardField = data.target;
                 let row;
                 let column;
-        
-                // jeżeli zostało wybrane pole
-                if (playerField.dataset.field !== undefined) {
-                    row = playerField.dataset.field[0];
-                    column = playerField.dataset.field[1];
-                }
-                // sprawdzam czy docelowe pole nie zostało zajęte
-                // wartość dwa to umowna wartość wolnego pola
-                if (this.board[row][column] === 2) {
+                
+                if (isPlayerValidChoice(boardField)) {
+                    row = boardField.dataset.field[0];
+                    column = boardField.dataset.field[0];
                     this.board[row][column] = this.current;
-                    if (this.current) {
-                        playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+                    if (this.player === 0) {
+                        boardField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
                     } else {
-                        playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+                        boardField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
                     }
-        
+
                     // TODO wyciagnąć jako funkcję, jeśli racjonalne
-                    result = Computer.setScore(gameReal);
+                    result = Computer.getScore(gameReal);
                     if (result === undefined) {
+                        // computer.move(gameReal)
                         this.current = this.computer;
                         this.opponent = this.player;
                         this.activeTurn = this.current;
                         computer.minimax(gameReal);
-                        gameReal.setComputerField(computer.choice);
+                        gameReal.setBoardField(computer.choice);
                     } else {
                         // FIXME funkcja końcowa
                         this.prepareFinalBox(result);
                     }
                 }
+                
             }
         },
         /**
