@@ -62,10 +62,12 @@ module.exports = function (grunt) {
             }
         },
         babel: {
+            options: {
+                presets: ['env']
+            },
             dist: {
                 options: {
                     sourceMap: false,
-                    presets: ['env']
                 },
                 files: {
                     'dev/temp/scriptsEs5.js': 'dev/temp/scripts.js'
@@ -73,8 +75,7 @@ module.exports = function (grunt) {
             },
             dev: {
                 options: {
-                    sourceMap: true,
-                    presets: ['env']
+                    sourceMap: true
                 },
                 files: {
                     'build/js/scriptsEs5.js': 'dev/temp/scripts.js'
