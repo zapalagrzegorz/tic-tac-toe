@@ -379,6 +379,21 @@ game.board = [
 game.current = 1;
 game.opponent = 0;
 
+// this test fails when located next to minimax assertions and run with all tests
+QUnit.test('Computer blocks winning for O', function (assert) {
+    game.board = [
+        [1, 2, 2],
+        [0, 0, 2],
+        [2, 2, 2]
+    ];
+    game.current = 1;
+    game.computer = 1;
+    game.opponent = 0;
+    game.activeTurn = 1;
+    computer.minimax(game);
+    assert.ok( (computer.choice[0] === 1 && computer.choice[1] === 2), 'computer chooses [1,2]');
+});
+
 QUnit.module('wygrywa krzyżyk - setScore()');
 
 QUnit.test('tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]', function (assert) {
@@ -620,3 +635,72 @@ QUnit.test('setting board field', function (assert) {
     // Verify expected behavior
     assert.deepEqual(game.board[0][0], 0, 'player mouse click was set');
 });
+
+QUnit.module('minimax algoritm');
+
+QUnit.test('Second move for computer X if O choose center', function (assert) {
+    game.board = [
+        [2, 2, 2],
+        [2, 0, 2],
+        [2, 2, 2]
+    ];
+    game.computer = 1;
+    game.activeTurn = 1;
+    computer.minimax(game);
+    assert.ok( (computer.choice[0] === 0 && computer.choice[1] === 0), 'computer chooses [0,0]');
+});
+
+QUnit.test('Computer X blocks winning for O', function (assert) {
+    game.board = [
+        [1, 2, 0],
+        [0, 0, 1],
+        [2, 2, 2]
+    ];
+    game.computer = 1;
+    game.activeTurn = 1;
+    computer.minimax(game);
+    assert.ok( (computer.choice[0] === 2 && computer.choice[1] === 0), 'computer chooses [2,0]');
+});
+
+QUnit.test('Computer X blocks winning for O', function (assert) {
+    game.board = [
+        [1, 2, 2],
+        [0, 0, 2],
+        [2, 2, 2]
+    ];
+    game.current = 1;
+    game.computer = 1;
+    game.opponent = 0;
+    game.activeTurn = 1;
+    computer.minimax(game);
+    assert.ok( (computer.choice[0] === 1 && computer.choice[1] === 2), 'computer chooses [1,2]');
+});
+
+QUnit.test('Computer X blocks winning for O', function (assert) {
+    game.board = [
+        [1, 2, 0],
+        [0, 0, 1],
+        [2, 2, 2]
+    ];
+    game.current = 1;
+    game.computer = 1;
+    game.opponent = 0;
+    game.activeTurn = 1;
+    computer.minimax(game);
+    assert.ok( (computer.choice[0] === 2 && computer.choice[1] === 0), 'computer chooses [2,0]');
+});
+
+QUnit.test('Computer 0 blocks winning for X', function (assert) {
+    game.board = [
+        [2, 2, 2],
+        [2, 1, 2],
+        [0, 2, 2]
+    ];
+    game.current = 1;
+    game.computer = 1;
+    game.opponent = 0;
+    game.activeTurn = 1;
+    computer.minimax(game);
+    assert.ok( (computer.choice[0] === 0 && computer.choice[1] === 0), 'computer chooses [0,0]');
+});
+
