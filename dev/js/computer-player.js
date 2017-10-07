@@ -214,11 +214,11 @@ class Computer {
      * @param {object} game 
      */
     setMove (game) {
-        game.current = this.computer;
-        game.opponent = this.player;
+        game.current = game.computer;
+        game.opponent = game.player;
         
         // TODO sprawdzić co się dzieje w minimaxie z activeTurn
-        game.activeTurn = this.current;
+        game.activeTurn = game.current;
         this.minimax(game);
         game.setBoardField(this.choice);
     }
