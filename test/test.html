@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css">
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="../build/css/main.css">
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
     <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
     <!-- <script src="qunit-validation.js"></script> -->
     <script src="test.js"></script>
@@ -16,7 +20,7 @@
 <body>
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
-    <!-- <div class="hidden">
+    <div class="hidden">
         <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
             <symbol id="circle" viewBox="0 0 289.354 289.354">
                 <title>circle</title>
@@ -56,31 +60,33 @@
             <div class="col text-center board__field" data-field="22">
             </div>
         </div>
-    </section> -->
-    <!-- <div class="modal">
-        <div class="modal__sandbox"></div>
-
-        <article id="initBox" class="modal__content">
+    </section>
+    <div class="">
+        <div class=""></div>
+        
+        <!-- startowy box -->
+        <article id="initBox" class="">
             <h2>start TicTacToe as</h2>
             <button class="btn" id="playerCircle"> 
-            <svg class="icon icon-circle">
-                <use xlink:href="#circle"  />
-            </svg>
-        </button>
+                <svg class="icon icon-circle">
+                    <use xlink:href="#circle"  />
+                </svg>
+            </button>
             <button class="btn" id="playerCross">
-            <svg class="icon icon-shapes" >
-                <use xlink:href="#shapes" />
-            </svg>
-        </button>
+                <svg class="icon icon-shapes" >
+                    <use xlink:href="#shapes" />
+                </svg>
+            </button>
         </article>
-
-        <article id="finalBox" class="modal__content">
+        
+        <!-- końcowy box -->
+        <article id="finalBox" class="modal__content">         
             <h2>Result: <span id="finalBox__result"></span></h2>
             <p>Try again?</p>
             <button class="btn" id="finalBox__tryAgain">AGAIN
-        </button>
+            </button>
         </article>
-    </div> -->
+    </div>
 
 </body>
 

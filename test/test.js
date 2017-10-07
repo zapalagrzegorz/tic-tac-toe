@@ -209,7 +209,12 @@ class Computer {
      *  to avoid that, generate pseudo-random move which is equivalent to that
      */
     setFirstMove () {
-        let possibleMoves = [[0, 0], [0, 2], [2, 0], [2, 2]];
+        let possibleMoves = [
+            [0, 0],
+            [0, 2],
+            [2, 0],
+            [2, 2]
+        ];
         let choice = Math.floor((Math.random() * 10 % 4));
         return possibleMoves[choice];
     }
@@ -241,103 +246,304 @@ let game = {
         [2, 2, 2],
         [2, 2, 2]
     ],
-    result: 0
+    result: 0,
+
+    /**
+     * zaznacza pole gracza na planszy
+     * @param {object} event mouseEvent
+     */
+    setPlayerField: function (event) {
+        let playerField = event.target;
+        let result;
+        let row;
+        let column;
+
+        // jeżeli zostało wybrane pole
+        if (playerField.dataset.field !== undefined) {
+            row = playerField.dataset.field[0];
+            column = playerField.dataset.field[1];
+        }
+        // sprawdzam czy docelowe pole nie zostało zajęte
+        // wartość dwa to umowna wartość wolnego pola
+        if (this.board[row][column] === 2) {
+            this.board[row][column] = this.current;
+            if (this.current) {
+                playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+            } else {
+                playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+            }
+
+            // TODO wyciagnąć jako funkcję, jeśli racjonalne
+            result = Computer.setScore(game);
+            if (result === undefined) {
+                this.current = this.computer;
+                this.opponent = this.player;
+                this.activeTurn = this.current;
+                computer.minimax(game);
+                game.setComputerField(computer.choice);
+            } else {
+                // FIXME funkcja końcowa
+                this.prepareFinalBox(result);
+            }
+        }
+    },
+    /**
+     * ustawia pole wartością komputera
+     * @param {number[]} arr 
+     */
+    setComputerField: function (arr) {
+        this.board[arr[0]][arr[1]] = this.current;
+        let computerField = document.querySelector('[data-field="' + arr[0] + arr[1] + '"]');
+        let result = undefined;
+
+        // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
+        // np. przy inicjalizacji
+        if (this.current) {
+            computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+        } else {
+            computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+        }
+        result = Computer.setScore(game);
+        if (result !== undefined) {
+            this.prepareFinalBox(result);
+        }
+        this.current = this.player;
+    },
+    // komputer przyjmuje tablicę z polem, które ma być zaznaczone
+    // użytkownik przyjmuje obiekt event
+    // 
+    setBoardField: function (data) {
+        if (Array.isArray(data)) {
+            // computer
+            this.board[data[0]][data[1]] = this.current;
+            let computerField = document.querySelector('[data-field="' + data[0] + data[1] + '"]');
+            let result = undefined;
+
+            // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
+            // np. przy inicjalizacji
+            if (this.current) {
+                computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+            } else {
+                computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+            }
+            result = Computer.setScore(game);
+            if (result !== undefined) {
+                this.prepareFinalBox(result);
+            }
+            this.current = this.player;
+        } else {
+            // player
+            let playerField = data.target;
+            let result;
+            let row;
+            let column;
+    
+            // jeżeli zostało wybrane pole
+            if (playerField.dataset.field !== undefined) {
+                row = playerField.dataset.field[0];
+                column = playerField.dataset.field[1];
+            }
+            // sprawdzam czy docelowe pole nie zostało zajęte
+            // wartość dwa to umowna wartość wolnego pola
+            if (this.board[row][column] === 2) {
+                this.board[row][column] = this.current;
+                if (this.current) {
+                    playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+                } else {
+                    playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+                }
+    
+                // TODO wyciagnąć jako funkcję, jeśli racjonalne
+                result = Computer.setScore(game);
+                if (result === undefined) {
+                    this.current = this.computer;
+                    this.opponent = this.player;
+                    this.activeTurn = this.current;
+                    computer.minimax(game);
+                    game.setComputerField(computer.choice);
+                } else {
+                    // FIXME funkcja końcowa
+                    this.prepareFinalBox(result);
+                }
+            }
+        }
+    }
 };
 
 let computer = new Computer;
-game.board = [[1, 2, 2], [1, 2, 2], [1, 2, 2]];
+game.board = [
+    [1, 2, 2],
+    [1, 2, 2],
+    [1, 2, 2]
+];
 game.current = 1;
 game.opponent = 0;
 
 QUnit.module('wygrywa krzyżyk - setScore()');
 
 QUnit.test('tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]', function (assert) {
-    game.board = [[1, 2, 2], [1, 2, 2], [1, 2, 2]];
+    game.board = [
+        [1, 2, 2],
+        [1, 2, 2],
+        [1, 2, 2]
+    ];
     assert.deepEqual(Computer.setScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]');
 });
 
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[2, 1, 2], [2, 1, 2], [2, 1, 2]];
+    game.board = [
+        [2, 1, 2],
+        [2, 1, 2],
+        [2, 1, 2]
+    ];
     assert.deepEqual(Computer.setScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]');
 });
 
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[0, 2, 1], [2, 2, 1], [2, 1, 1]];
+    game.board = [
+        [0, 2, 1],
+        [2, 2, 1],
+        [2, 1, 1]
+    ];
     game.current = 1;
     assert.deepEqual(Computer.setScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
 });
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[1, 1, 1], [2, 2, 2], [2, 2, 2]];
+    game.board = [
+        [1, 1, 1],
+        [2, 2, 2],
+        [2, 2, 2]
+    ];
     game.current = 1;
     assert.deepEqual(Computer.setScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[1, 1, 1], [2, 2, 2], [2, 2, 2]]');
 });
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[2, 2, 2], [1, 1, 1], [2, 2, 2]];
+    game.board = [
+        [2, 2, 2],
+        [1, 1, 1],
+        [2, 2, 2]
+    ];
     game.current = 1;
     assert.deepEqual(Computer.setScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[2, 2, 2], [1, 1, 1], [2, 2, 2]]');
 });
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[2, 2, 2], [2, 2, 2], [1, 1, 1]];
+    game.board = [
+        [2, 2, 2],
+        [2, 2, 2],
+        [1, 1, 1]
+    ];
     game.current = 1;
     assert.deepEqual(Computer.setScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[2, 2, 2], [2, 2, 2], [1, 1, 1]]');
 });
 
 QUnit.module('Wygrywa kółko - setScore()');
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[0, 0, 0], [2, 2, 2], [2, 2, 2]];
+    game.board = [
+        [0, 0, 0],
+        [2, 2, 2],
+        [2, 2, 2]
+    ];
     assert.deepEqual(Computer.setScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[0, 0, 0], [2, 2, 2], [2, 2, 2]]');
 });
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[2, 2, 2], [0, 0, 0], [2, 2, 2]];
+    game.board = [
+        [2, 2, 2],
+        [0, 0, 0],
+        [2, 2, 2]
+    ];
     assert.deepEqual(Computer.setScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[2, 2, 2], [0, 0, 0], [2, 2, 2]]');
 });
 QUnit.test('tablica = [[2, 2, 2], [2, 2, 2], [0, 0, 0]]', function (assert) {
-    game.board = [[2, 2, 2], [2, 2, 2], [0, 0, 0]];
+    game.board = [
+        [2, 2, 2],
+        [2, 2, 2],
+        [0, 0, 0]
+    ];
     assert.deepEqual(Computer.setScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[2, 2, 2], [2, 2, 2], [0, 0, 0]]');
 });
 QUnit.test('tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]', function (assert) {
-    game.board = [[0, 2, 2], [0, 2, 2], [0, 2, 2]];
+    game.board = [
+        [0, 2, 2],
+        [0, 2, 2],
+        [0, 2, 2]
+    ];
     assert.deepEqual(Computer.setScore(game), -1, 'Koniec gry, wygrywa kółko poziomo; tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]');
 });
 QUnit.test('tablica = [[2, 0, 2], [2, 0, 2], [2, 0, 2]]', function (assert) {
-    game.board = [[2, 0, 2], [2, 0, 2], [2, 0, 2]];
+    game.board = [
+        [2, 0, 2],
+        [2, 0, 2],
+        [2, 0, 2]
+    ];
     assert.deepEqual(Computer.setScore(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[2, 0, 2], [2, 0, 2], [2, 0, 2]]');
 });
 QUnit.test('tablica = [[2, 2, 0], [2, 2, 0], [2, 2, 0]]', function (assert) {
-    game.board = [[2, 2, 0], [2, 2, 0], [2, 2, 0]];
+    game.board = [
+        [2, 2, 0],
+        [2, 2, 0],
+        [2, 2, 0]
+    ];
     assert.deepEqual(Computer.setScore(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[2, 2, 0], [2, 2, 0], [2, 2, 0]]');
 });
 QUnit.test('tablica = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]', function (assert) {
-    
-    game.board = [[1, 2, 2], [2, 1, 2], [2, 2, 1]];
+
+    game.board = [
+        [1, 2, 2],
+        [2, 1, 2],
+        [2, 2, 1]
+    ];
     assert.deepEqual(Computer.setScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]');
 });
 QUnit.test('tablica = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]', function (assert) {
-    game.board = [[2, 2, 1], [2, 1, 2], [1, 2, 2]];
+    game.board = [
+        [2, 2, 1],
+        [2, 1, 2],
+        [1, 2, 2]
+    ];
     assert.deepEqual(Computer.setScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie do tyłu = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]');
 });
 QUnit.test('tablica = [[0, 2, 2], [2, 0, 2], [2, 2, 0]]', function (assert) {
-    game.board = [[0, 2, 2], [2, 0, 2], [2, 2, 0]];
+    game.board = [
+        [0, 2, 2],
+        [2, 0, 2],
+        [2, 2, 0]
+    ];
     assert.deepEqual(Computer.setScore(game), -1, 'Koniec gry: wygrywa kółko po skosie = [[0, 2, 2], [2, 0, 2], [2, 2, 0]]');
 });
 QUnit.test('tablica = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]', function (assert) {
-    game.board = [[2, 2, 0], [2, 0, 2], [0, 2, 2]];
+    game.board = [
+        [2, 2, 0],
+        [2, 0, 2],
+        [0, 2, 2]
+    ];
     assert.deepEqual(Computer.setScore(game), -1, 'Koniec gry: wygrywa kółko po skosie do tyłu = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]');
 });
 QUnit.module('Remis - setScore()');
 QUnit.test('tablica = [[0, 0, 1], [1, 1, 0], [0, 1, 1]]', function (assert) {
-    game.board = [[0, 0, 1], [1, 1, 0], [0, 1, 1]];
+    game.board = [
+        [0, 0, 1],
+        [1, 1, 0],
+        [0, 1, 1]
+    ];
     assert.deepEqual(Computer.setScore(game), 0, 'Remis, koniec gry; tablica = [[0, 0, 1], [1, 1, 0], [0, 1, 1]]');
 });
 QUnit.test('tablica = [[0, 1, 0], [1, 0, 0], [1, 0, 1]]', function (assert) {
-    game.board = [[0, 1, 0], [1, 0, 0], [1, 0, 1]];
+    game.board = [
+        [0, 1, 0],
+        [1, 0, 0],
+        [1, 0, 1]
+    ];
     assert.deepEqual(Computer.setScore(game), 0, 'Remis, koniec gry; tablica = [[0, 1, 0], [1, 0, 0], [1, 0, 1]]');
 });
 
 QUnit.module('Dalsza gra - setScore()');
 
 QUnit.test('tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]', function (assert) {
-    game.board = [[2, 0, 1], [1, 1, 0], [0, 1, 1]];
+    game.board = [
+        [2, 0, 1],
+        [1, 1, 0],
+        [0, 1, 1]
+    ];
     assert.deepEqual(Computer.setScore(game), undefined, 'Dalsza gra tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]');
 });
 
@@ -345,27 +551,72 @@ QUnit.test('tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]', function (assert) {
 QUnit.module('Dostępne ruchy - computer.getAvailableMoves()');
 
 
-game.board = [[2, 2, 2], [2, 2, 2], [2, 2, 2]];
+game.board = [
+    [2, 2, 2],
+    [2, 2, 2],
+    [2, 2, 2]
+];
 console.log(computer.getAvailableMoves(game));
 
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[2, 2, 2], [2, 2, 2], [2, 2, 2]];
-    assert.deepEqual(computer.getAvailableMoves(game), [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
+    game.board = [
+        [2, 2, 2],
+        [2, 2, 2],
+        [2, 2, 2]
+    ];
+    assert.deepEqual(computer.getAvailableMoves(game), [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+        [1, 0],
+        [1, 1],
+        [1, 2],
+        [2, 0],
+        [2, 1],
+        [2, 2]
+    ], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
 });
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[0, 2, 0], [1, 2, 1], [1, 0, 2]];
-    assert.deepEqual(computer.getAvailableMoves(game), [[0, 1], [1, 1], [2, 2]], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
+    game.board = [
+        [0, 2, 0],
+        [1, 2, 1],
+        [1, 0, 2]
+    ];
+    assert.deepEqual(computer.getAvailableMoves(game), [
+        [0, 1],
+        [1, 1],
+        [2, 2]
+    ], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
 });
 
 QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [[0, 2, 2], [2, 2, 1], [0, 0, 1]];
-    assert.deepEqual(computer.getAvailableMoves(game), [[0, 1], [0, 2], [1, 0], [1, 1]], 'dostępne ruchy z tablicy [[0, 2, 2], [2, 2, 1], [0, 0, 1]] to [0,1],[0,2],[1,0],[1,1]');
+    game.board = [
+        [0, 2, 2],
+        [2, 2, 1],
+        [0, 0, 1]
+    ];
+    assert.deepEqual(computer.getAvailableMoves(game), [
+        [0, 1],
+        [0, 2],
+        [1, 0],
+        [1, 1]
+    ], 'dostępne ruchy z tablicy [[0, 2, 2], [2, 2, 1], [0, 0, 1]] to [0,1],[0,2],[1,0],[1,1]');
 });
 
 QUnit.module('computer methods');
 
 QUnit.test('pseudo-losowy pierwszy ruch', function (assert) {
     let arr = computer.setFirstMove();
-    assert.ok(  ( (arr[0] === 0 || arr[0] === 2) && (arr[1] === 0 || arr[1] === 2)), 'Wyznaczono pierwszy ruch');
+    assert.ok(((arr[0] === 0 || arr[0] === 2) && (arr[1] === 0 || arr[1] === 2)), 'Wyznaczono pierwszy ruch');
 });
 
+QUnit.module('setting board field');
+QUnit.test('setting board field', function (assert) {
+    let boardFields = document.querySelectorAll('.board__field');
+    boardFields.forEach((value) => value.addEventListener('click', game.setBoardField.bind(game), false));
+    game.current = 0;
+    game.player = 0;
+    $('[data-field="00"]').trigger('click');
+    // Verify expected behavior
+    assert.deepEqual(game.board[0][0], 0, 'player mouse click was set');
+});
