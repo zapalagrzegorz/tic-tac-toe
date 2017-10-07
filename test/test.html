@@ -2,55 +2,85 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Tic Tac Toe tests Qunit</title>
-  <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css">
-  <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="../build/css/main.css">
-  <!-- <script src="../node_modules/qunitjs/qunit/qunit.js"></script> -->
-  <!--C:\Users\GZ\Documents\II\FCC\TicTacToe\node_modules\qunitjs\qunit\qunit.js-->
-  <script src="test.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tic Tac Toe tests Qunit</title>
+    <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../build/css/main.css">
+    <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+    <!-- <script src="qunit-validation.js"></script> -->
+    <script src="test.js"></script>
 </head>
 
 <body>
-  <!-- <div id="qunit"></div> -->
-  <!-- <div id="qunit-fixture"></div> -->
-  <div class="hidden">
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-      <symbol id="circle" viewBox="0 0 289.354 289.354">
-        <title>circle</title>
-        <path d="M144.677,0C64.901,0,0,64.901,0,144.677s64.901,144.677,144.677,144.677s144.677-64.901,144.677-144.677 S224.452,0,144.677,0z M259.21,138.93l-48.581-12.798c-6.448-22.896-24.511-40.959-47.407-47.407l-12.798-48.581 C209.094,33.054,256.3,80.26,259.21,138.93z M144.677,183.199c-21.241,0-38.523-17.281-38.523-38.522s17.281-38.522,38.523-38.522 s38.522,17.281,38.522,38.522S165.918,183.199,144.677,183.199z M138.93,30.144l-12.798,48.581 c-22.896,6.448-40.959,24.511-47.407,47.407L30.144,138.93C33.054,80.26,80.26,33.054,138.93,30.144z M30.144,150.424l48.581,12.798 c6.447,22.896,24.511,40.959,47.407,47.407l12.798,48.581C80.26,256.3,33.054,209.093,30.144,150.424z M150.424,259.21 l12.798-48.581c22.896-6.448,40.959-24.511,47.407-47.407l48.581-12.798C256.3,209.093,209.094,256.3,150.424,259.21z"
-        />
-      </symbol>
-      <symbol id="shapes" viewBox="0 0 415.188 415.188">
-        <title>shapes</title>
-        <path d="M412.861,78.976c3.404-6.636,2.831-14.159-0.15-20.404c0.84-7.106-1.02-14.321-7.746-19.855 c-6.262-5.151-12.523-10.305-18.781-15.457c-11.005-9.055-28.237-11.913-38.941,0c-48.619,54.103-99.461,105.856-152.167,155.725 c-39.185-36.605-78.846-72.713-118.223-108.868c-13.82-12.693-33.824-8.71-42.519,6.411c-12.665,6.286-22.931,14.481-31.42,28.468 c-4.042,6.664-3.727,15.076,0,21.764c25.421,45.578,74.557,85.651,114.957,122.529c-5.406,4.839-10.772,9.724-16.287,14.461 c-54.43,46.742-91.144,76.399-23.029,124.325c0.919,0.647,1.856,0.504,2.789,0.882c1.305,0.602,2.557,1.026,4.004,1.264 c0.45,0.017,0.87,0.093,1.313,0.058c1.402,0.114,2.774,0.471,4.195,0.192c36.621-7.18,70.677-35.878,101.576-67.48 c30.1,29.669,62.151,58.013,97.395,74.831c8.391,4.005,18.395,1.671,24.855-3.931c10.832,0.818,20.708-5.913,25.665-15.586 c0.734-0.454,1.207-0.713,2.002-1.21c15.748-9.838,17.187-29.431,5.534-42.936c-26.313-30.492-54.284-59.478-82.798-87.95 C316.426,196.043,380.533,141.939,412.861,78.976z"
-        />
-      </symbol>
-    </svg>
-  </div>
-  <section class="container">
-    <div class="row">
-      <div class="col text-center target">
-        <svg class="icon">
-          <use xlink:href="#circle" />
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <!-- <div class="hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <symbol id="circle" viewBox="0 0 289.354 289.354">
+                <title>circle</title>
+                <path d="M144.677,0C64.901,0,0,64.901,0,144.677s64.901,144.677,144.677,144.677s144.677-64.901,144.677-144.677 S224.452,0,144.677,0z M259.21,138.93l-48.581-12.798c-6.448-22.896-24.511-40.959-47.407-47.407l-12.798-48.581 C209.094,33.054,256.3,80.26,259.21,138.93z M144.677,183.199c-21.241,0-38.523-17.281-38.523-38.522s17.281-38.522,38.523-38.522 s38.522,17.281,38.522,38.522S165.918,183.199,144.677,183.199z M138.93,30.144l-12.798,48.581 c-22.896,6.448-40.959,24.511-47.407,47.407L30.144,138.93C33.054,80.26,80.26,33.054,138.93,30.144z M30.144,150.424l48.581,12.798 c6.447,22.896,24.511,40.959,47.407,47.407l12.798,48.581C80.26,256.3,33.054,209.093,30.144,150.424z M150.424,259.21 l12.798-48.581c22.896-6.448,40.959-24.511,47.407-47.407l48.581-12.798C256.3,209.093,209.094,256.3,150.424,259.21z"
+                />
+            </symbol>
+            <symbol id="shapes" viewBox="0 0 415.188 415.188">
+                <title>shapes</title>
+                <path d="M412.861,78.976c3.404-6.636,2.831-14.159-0.15-20.404c0.84-7.106-1.02-14.321-7.746-19.855 c-6.262-5.151-12.523-10.305-18.781-15.457c-11.005-9.055-28.237-11.913-38.941,0c-48.619,54.103-99.461,105.856-152.167,155.725 c-39.185-36.605-78.846-72.713-118.223-108.868c-13.82-12.693-33.824-8.71-42.519,6.411c-12.665,6.286-22.931,14.481-31.42,28.468 c-4.042,6.664-3.727,15.076,0,21.764c25.421,45.578,74.557,85.651,114.957,122.529c-5.406,4.839-10.772,9.724-16.287,14.461 c-54.43,46.742-91.144,76.399-23.029,124.325c0.919,0.647,1.856,0.504,2.789,0.882c1.305,0.602,2.557,1.026,4.004,1.264 c0.45,0.017,0.87,0.093,1.313,0.058c1.402,0.114,2.774,0.471,4.195,0.192c36.621-7.18,70.677-35.878,101.576-67.48 c30.1,29.669,62.151,58.013,97.395,74.831c8.391,4.005,18.395,1.671,24.855-3.931c10.832,0.818,20.708-5.913,25.665-15.586 c0.734-0.454,1.207-0.713,2.002-1.21c15.748-9.838,17.187-29.431,5.534-42.936c-26.313-30.492-54.284-59.478-82.798-87.95 C316.426,196.043,380.533,141.939,412.861,78.976z"
+                />
+            </symbol>
         </svg>
-      </div>
-      <div class="col text-center">0</div>
-      <div class="col text-center">0</div>
     </div>
-    <div class="row">
-      <div class="col text-center">0</div>
-      <div class="col text-center">0</div>
-      <div class="col text-center">0</div>
-    </div>
-    <div class="row">
-      <div class="col text-center">0</div>
-      <div class="col text-center">0</div>
-      <div class="col text-center">0</div>
-    </div>
-  </section>
+
+    <section class="container board">
+        <div class="row">
+            <div class="col text-center board__field" data-field="00">
+            </div>
+            <div class="col text-center board__field" data-field="01">
+            </div>
+            <div class="col text-center board__field" data-field="02">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center board__field" data-field="10">
+            </div>
+            <div class="col text-center board__field" data-field="11">
+            </div>
+            <div class="col text-center board__field" data-field="12">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center board__field" data-field="20">
+            </div>
+            <div class="col text-center board__field" data-field="21">
+            </div>
+            <div class="col text-center board__field" data-field="22">
+            </div>
+        </div>
+    </section> -->
+    <!-- <div class="modal">
+        <div class="modal__sandbox"></div>
+
+        <article id="initBox" class="modal__content">
+            <h2>start TicTacToe as</h2>
+            <button class="btn" id="playerCircle"> 
+            <svg class="icon icon-circle">
+                <use xlink:href="#circle"  />
+            </svg>
+        </button>
+            <button class="btn" id="playerCross">
+            <svg class="icon icon-shapes" >
+                <use xlink:href="#shapes" />
+            </svg>
+        </button>
+        </article>
+
+        <article id="finalBox" class="modal__content">
+            <h2>Result: <span id="finalBox__result"></span></h2>
+            <p>Try again?</p>
+            <button class="btn" id="finalBox__tryAgain">AGAIN
+        </button>
+        </article>
+    </div> -->
 
 </body>
 
