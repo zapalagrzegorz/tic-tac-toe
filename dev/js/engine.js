@@ -63,117 +63,74 @@ document.addEventListener('DOMContentLoaded', function () {
                 gameReal.setBoardField(computer.setFirstMove());
             }
         },
-
+        
         /**
-         * zaznacza pole gracza na planszy
-         * @param {object} event mouseEvent
+         * Określa pole gracza na planszy 
+         * @param {(object | number[])} data object to data
          */
-        setPlayerField: function (event) {
-            let playerField = event.target;
-            let result;
-            let row;
-            let column;
-
-            // jeżeli zostało wybrane pole
-            if (playerField.dataset.field !== undefined) {
-                row = playerField.dataset.field[0];
-                column = playerField.dataset.field[1];
-            }
-            // sprawdzam czy docelowe pole nie zostało zajęte
-            // wartość dwa to umowna wartość wolnego pola
-            if ( this.board[row][column] === 2) {
-                this.board[row][column] = this.current;
-                if (this.current) {
-                    playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-                } else {
-                    playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-                }
-                
-                // TODO wyciagnąć jako funkcję, jeśli racjonalne
-                result = Computer.setScore(gameReal);
-                if (result === undefined) {
-                    this.current = this.computer;
-                    this.opponent = this.player;
-                    this.activeTurn = this.current;
-                    computer.minimax(gameReal);
-                    gameReal.setBoardField(computer.choice);
-                } else {
-                    // FIXME funkcja końcowa
-                    this.prepareFinalBox(result);
-                }
-            }
-        },
-        /**
-         * ustawia pole wartością komputera
-         * @param {number[]} arr 
-         */
-        setComputerField: function (arr) {
-            this.board[arr[0]][arr[1]] = this.current;
-            let computerField = document.querySelector('[data-field="' + arr[0] + arr[1] + '"]');
-            let result = undefined;
-
-            // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
-            // np. przy inicjalizacji
-            if (this.current) {
-                computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-            } else {
-                computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-            }
-            result = Computer.setScore(gameReal);
-            if (result !== undefined) {
-                this.prepareFinalBox(result);
-            }
-            this.current = this.player;
-        },
         setBoardField: function (data) {
+            let result;
+            let boardField;
+            let _this = this;
+            /**
+             * Sprawdza czy ruch gracza jest prawidłowy
+             * @param {object} chosenField to jest object, property MouseEvent.target pochodzący z event'u 'click' Player'a
+             * @return {boolean}
+             */
+            function isPlayerValidMove (chosenField) {
+                // czy zostało wybrane pole gry i czy jest nadal wolne
+                if (chosenField.dataset.field !== undefined && _this.board[boardField.dataset.field[0]][boardField.dataset.field[1]] === 2) {
+                    return true;
+                }
+            }
+            /**
+             * Zaznacza wybrane pole w DOM
+             * @param {object} field HTMLelement 
+             */
+            function setBoardFieldDOM (field) {
+                if (_this.current === 1) {
+                    field.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+                } else {
+                    field.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+                }
+            } 
             if (Array.isArray(data)) {
+
                 // computer
                 this.board[data[0]][data[1]] = this.current;
-                let computerField = document.querySelector('[data-field="' + data[0] + data[1] + '"]');
-                let result = undefined;
+                let boardField = document.querySelector('[data-field="' + data[0] + data[1] + '"]');
     
-                // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
-                // np. przy inicjalizacji
-                if (this.current) {
-                    computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-                } else {
-                    computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-                }
+                setBoardFieldDOM (boardField);
                 result = Computer.setScore(gameReal);
                 if (result !== undefined) {
                     this.prepareFinalBox(result);
                 }
                 this.current = this.player;
             } else {
+
                 // player
-                let playerField = data.target;
-                let result;
+                boardField = data.target;
                 let row;
                 let column;
         
-                // jeżeli zostało wybrane pole
-                if (playerField.dataset.field !== undefined) {
-                    row = playerField.dataset.field[0];
-                    column = playerField.dataset.field[1];
-                }
-                // sprawdzam czy docelowe pole nie zostało zajęte
-                // wartość dwa to umowna wartość wolnego pola
-                if (this.board[row][column] === 2) {
+                if (isPlayerValidMove(boardField)) {
+                    row = boardField.dataset.field[0];
+                    column = boardField.dataset.field[1];
+
                     this.board[row][column] = this.current;
-                    if (this.current) {
-                        playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-                    } else {
-                        playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-                    }
+                    setBoardFieldDOM (boardField);
         
                     // TODO wyciagnąć jako funkcję, jeśli racjonalne
                     result = Computer.setScore(gameReal);
                     if (result === undefined) {
-                        this.current = this.computer;
-                        this.opponent = this.player;
-                        this.activeTurn = this.current;
-                        computer.minimax(gameReal);
-                        gameReal.setComputerField(computer.choice);
+                        computer.setMove(gameReal);
+                        // this.current = this.computer;
+                        // this.opponent = this.player;
+                        
+                        // // TODO sprawdzić co się dzieje w minimaxie z activeTurn
+                        // this.activeTurn = this.current;
+                        // computer.minimax(gameReal);
+                        // gameReal.setBoardField(computer.choice);
                     } else {
                         // FIXME funkcja końcowa
                         this.prepareFinalBox(result);

@@ -3,7 +3,7 @@
  * może exporcik :-)
  */
 class Computer {
-    constructor() {
+    constructor () {
         // kluczowa tablica przechowująca 'najlepszy' ruch
         this.choice = [];
     }
@@ -25,7 +25,7 @@ class Computer {
      * @param {object} game 
      * @return {number} The x value.
      */
-    static setScore(game) {
+    static setScore (game) {
         let draw = 0;
         let successPlayerVertical = 0;
         let successPlayerHorizontal = 0;
@@ -124,7 +124,7 @@ class Computer {
      * number[]
      * @param {Object} game 
      */
-    getAvailableMoves(game) {
+    getAvailableMoves (game) {
         let availableMoves = [];
         for (let i = 0; i <= 2; i++) {
             for (let j = 0; j <= 2; j++) {
@@ -141,7 +141,7 @@ class Computer {
      * @param {number[]} move 
      * @param {Object} game 
      */
-    getNewState(move, game) {
+    getNewState (move, game) {
         // kopiowanie tworzy referencję
         // for(var prop in this){
         //     newGame[prop] = this[prop];
@@ -163,7 +163,7 @@ class Computer {
      * @param {object} game
      * @return {number} The x value.
      */
-    minimax(game) {
+    minimax (game) {
 
         // return score if game over
         let score = Computer.setScore(game);
@@ -173,7 +173,7 @@ class Computer {
         let moves = [];
 
         // Populate the scores array, recursing as needed
-        this.getAvailableMoves(game).forEach(function iterateMoves(move) {
+        this.getAvailableMoves(game).forEach(function iterateMoves (move) {
 
             let possibleGame = this.getNewState(move, game);
 
@@ -199,7 +199,7 @@ class Computer {
             return scores[min_score_index];
         }
     }
-    setFirstMove() {
+    setFirstMove () {
         let possibleMoves = [
             [0, 0],
             [0, 2],
@@ -208,5 +208,18 @@ class Computer {
         ];
         let choice = Math.floor((Math.random() * 10 % 4));
         return possibleMoves[choice];
+    }
+    /**
+     * Perform computer move
+     * @param {object} game 
+     */
+    setMove (game) {
+        game.current = this.computer;
+        game.opponent = this.player;
+        
+        // TODO sprawdzić co się dzieje w minimaxie z activeTurn
+        game.activeTurn = this.current;
+        this.minimax(game);
+        game.setBoardField(this.choice);
     }
 }
