@@ -1,19 +1,31 @@
 /**
- * Klasa odpowiedzialna za logikę komputera
+ * TODO wyodrębnić do nowego pliku 
+ * może exporcik :-)
  */
 class Computer {
-    constructor () {
+    constructor() {
         // kluczowa tablica przechowująca 'najlepszy' ruch
         this.choice = [];
     }
     /**
      * Zwraca wartość liczbową określającą stan gry:
-     * 1 - wygrał gracz, '-1' - wygrał komputer, 0 - remis, undefinded - brak rozstrzygnięcia
-     *  
-     * @param {object} game Przyjmuje obiekt game przechowujący informacje o grze  
+     * 1 - wygrał gracz, '-1' - wygrał komputer, 0 - remis
+     * undefined - gdy gra się nie zakończyła - [czy to ma sens]
+     * 
+     *  Przyjmuje obiekt game przechowujący informacje o grze 
+     * 
+     * 
+     * Modyfikator static. Za MDN: Static method calls are made directly on the class and are not callable on instances of the class. Static methods are often used to create utility functions.
+     * [czy to ma sens?! skoro klasę ]
+     * 
+     * TODO 
+     * obliczanie wartości gry nie ma logicznego związku umieszczenie w klasie gracz-komputer
+     * ewidentnie należy do mechanizmu 'centralnego'
+     *
+     * @param {object} game 
      * @return {number} The x value.
      */
-    static getScore (game) {
+    static setScore(game) {
         let draw = 0;
         let successPlayerVertical = 0;
         let successPlayerHorizontal = 0;
@@ -112,7 +124,7 @@ class Computer {
      * number[]
      * @param {Object} game 
      */
-    getAvailableMoves (game) {
+    getAvailableMoves(game) {
         let availableMoves = [];
         for (let i = 0; i <= 2; i++) {
             for (let j = 0; j <= 2; j++) {
@@ -129,36 +141,39 @@ class Computer {
      * @param {number[]} move 
      * @param {Object} game 
      */
-    getNewState (move, game) {
-
-        // kopiowanie obiektu
+    getNewState(move, game) {
+        // kopiowanie tworzy referencję
+        // for(var prop in this){
+        //     newGame[prop] = this[prop];
+        // }
+        // aby zrobić deep copy MDN rekomenduje parse i stringify obiektu JSON
         let newGame = JSON.parse(JSON.stringify(game));
-        newGame.board[move[0]][move[1]] = newGame.activeTurn;
 
+        newGame.board[move[0]][move[1]] = newGame.activeTurn;
         // kolejny ruch wykonuje drugi z graczy
         newGame.activeTurn = (newGame.activeTurn === 1) ? 0 : 1;
+        // newGame.notActive = (newGame.activeTurn === 1) ? 0 : 1;
 
         return newGame;
     }
     /**
+     * 
      * Wyznacza ruch komputera na podstawie algorytmu minimax
      * Wynik jest zapisywany we właściwości choice
-     * Pseudo-algorytm wzięty z http://neverstopbuilding.com/minimax
-     * 
      * @param {object} game
      * @return {number} The x value.
      */
-    minimax (game) {
+    minimax(game) {
 
         // return score if game over
-        let score = Computer.getScore(game);
+        let score = Computer.setScore(game);
         if (score !== undefined) return score;
 
         let scores = [];
         let moves = [];
 
         // Populate the scores array, recursing as needed
-        this.getAvailableMoves(game).forEach(function iterateMoves (move) {
+        this.getAvailableMoves(game).forEach(function iterateMoves(move) {
 
             let possibleGame = this.getNewState(move, game);
 
@@ -169,6 +184,8 @@ class Computer {
 
         // Do the min or the max calculation
         // This is the max calculation
+        // TODO - styl zmiennych i nazw funkcji
+        // 
         if (game.activeTurn === game.current) {
             let max_score_index = scores.indexOf(Math.max(...scores));
 
@@ -182,13 +199,7 @@ class Computer {
             return scores[min_score_index];
         }
     }
-    /**
-     * Gets pseudo-random first move for computer.
-     * Komputer inaczej przez 5 sek wybiera pole [0,0] - pierwszy z narożników
-     * 
-     * @returns {number[]} tablica z dwoma wartościami, określajaca wybrane pole z przygotowanych wcześniej narożników
-     */
-    setFirstMove () {
+    setFirstMove() {
         let possibleMoves = [
             [0, 0],
             [0, 2],
