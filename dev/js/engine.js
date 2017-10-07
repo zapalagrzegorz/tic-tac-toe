@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.current = this.computer;
                 this.opponent = this.player;
                 // TODO a może setField(komputer/gracz, wartość computer.minimax(gameReal);
-                gameReal.setComputerField(computer.setFirstMove());
+                gameReal.setBoardField(computer.setFirstMove());
             }
         },
 
@@ -96,11 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     this.opponent = this.player;
                     this.activeTurn = this.current;
                     computer.minimax(gameReal);
-                    // nie powinien robić np. computer?
-                    // TODO a może setField(komputer/gracz, wartość computer.minimax(gameReal);
-                    // nie powinien robić np. computer?
-                    // TODO a może setField(komputer/gracz, wartość)
-                    gameReal.setComputerField(computer.choice);
+                    gameReal.setBoardField(computer.choice);
                 } else {
                     // FIXME funkcja końcowa
                     this.prepareFinalBox(result);
@@ -129,7 +125,62 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             this.current = this.player;
         },
-
+        setBoardField: function (data) {
+            if (Array.isArray(data)) {
+                // computer
+                this.board[data[0]][data[1]] = this.current;
+                let computerField = document.querySelector('[data-field="' + data[0] + data[1] + '"]');
+                let result = undefined;
+    
+                // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
+                // np. przy inicjalizacji
+                if (this.current) {
+                    computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+                } else {
+                    computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+                }
+                result = Computer.setScore(gameReal);
+                if (result !== undefined) {
+                    this.prepareFinalBox(result);
+                }
+                this.current = this.player;
+            } else {
+                // player
+                let playerField = data.target;
+                let result;
+                let row;
+                let column;
+        
+                // jeżeli zostało wybrane pole
+                if (playerField.dataset.field !== undefined) {
+                    row = playerField.dataset.field[0];
+                    column = playerField.dataset.field[1];
+                }
+                // sprawdzam czy docelowe pole nie zostało zajęte
+                // wartość dwa to umowna wartość wolnego pola
+                if (this.board[row][column] === 2) {
+                    this.board[row][column] = this.current;
+                    if (this.current) {
+                        playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+                    } else {
+                        playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+                    }
+        
+                    // TODO wyciagnąć jako funkcję, jeśli racjonalne
+                    result = Computer.setScore(gameReal);
+                    if (result === undefined) {
+                        this.current = this.computer;
+                        this.opponent = this.player;
+                        this.activeTurn = this.current;
+                        computer.minimax(gameReal);
+                        gameReal.setComputerField(computer.choice);
+                    } else {
+                        // FIXME funkcja końcowa
+                        this.prepareFinalBox(result);
+                    }
+                }
+            }
+        },
         /**
          * wywołuje animację dla inicjalnego dialogu
          */
@@ -201,7 +252,8 @@ document.addEventListener('DOMContentLoaded', function () {
         gameReal.elements.playerCross.addEventListener('click', gameReal.setPlayer.bind(gameReal, 1), false);
 
         // dla każego pola gry podpinamy dla eventu click metodę setPlayerField (ustawiajac this na obiekt gameReal)
-        gameReal.elements.boardFields.forEach((value) => value.addEventListener('click', gameReal.setPlayerField.bind(gameReal), false));
+        // gameReal.elements.boardFields.forEach((value) => value.addEventListener('click', gameReal.setPlayerField.bind(gameReal), false));
+        gameReal.elements.boardFields.forEach((value) => value.addEventListener('click', gameReal.setBoardField.bind(gameReal), false));
         gameReal.elements.finalBox__tryAgain.addEventListener('click', replay);
     })();
 });
