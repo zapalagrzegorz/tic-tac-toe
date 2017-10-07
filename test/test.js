@@ -249,66 +249,66 @@ let game = {
     result: 0,
 
     /**
-     * zaznacza pole gracza na planszy
-     * @param {object} event mouseEvent
-     */
-    setPlayerField: function (event) {
-        let playerField = event.target;
-        let result;
-        let row;
-        let column;
+    //  * zaznacza pole gracza na planszy
+    //  * @param {object} event mouseEvent
+    //  */
+    // setPlayerField: function (event) {
+    //     let playerField = event.target;
+    //     let result;
+    //     let row;
+    //     let column;
 
-        // jeżeli zostało wybrane pole
-        if (playerField.dataset.field !== undefined) {
-            row = playerField.dataset.field[0];
-            column = playerField.dataset.field[1];
-        }
-        // sprawdzam czy docelowe pole nie zostało zajęte
-        // wartość dwa to umowna wartość wolnego pola
-        if (this.board[row][column] === 2) {
-            this.board[row][column] = this.current;
-            if (this.current) {
-                playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-            } else {
-                playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-            }
+    //     // jeżeli zostało wybrane pole
+    //     if (playerField.dataset.field !== undefined) {
+    //         row = playerField.dataset.field[0];
+    //         column = playerField.dataset.field[1];
+    //     }
+    //     // sprawdzam czy docelowe pole nie zostało zajęte
+    //     // wartość dwa to umowna wartość wolnego pola
+    //     if (this.board[row][column] === 2) {
+    //         this.board[row][column] = this.current;
+    //         if (this.current) {
+    //             playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+    //         } else {
+    //             playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+    //         }
 
-            // TODO wyciagnąć jako funkcję, jeśli racjonalne
-            result = Computer.setScore(game);
-            if (result === undefined) {
-                this.current = this.computer;
-                this.opponent = this.player;
-                this.activeTurn = this.current;
-                computer.minimax(game);
-                game.setComputerField(computer.choice);
-            } else {
-                // FIXME funkcja końcowa
-                this.prepareFinalBox(result);
-            }
-        }
-    },
-    /**
-     * ustawia pole wartością komputera
-     * @param {number[]} arr 
-     */
-    setComputerField: function (arr) {
-        this.board[arr[0]][arr[1]] = this.current;
-        let computerField = document.querySelector('[data-field="' + arr[0] + arr[1] + '"]');
-        let result = undefined;
+    //         // TODO wyciagnąć jako funkcję, jeśli racjonalne
+    //         result = Computer.setScore(game);
+    //         if (result === undefined) {
+    //             this.current = this.computer;
+    //             this.opponent = this.player;
+    //             this.activeTurn = this.current;
+    //             computer.minimax(game);
+    //             game.setComputerField(computer.choice);
+    //         } else {
+    //             // FIXME funkcja końcowa
+    //             this.prepareFinalBox(result);
+    //         }
+    //     }
+    // },
+    // /**
+    //  * ustawia pole wartością komputera
+    //  * @param {number[]} arr 
+    //  */
+    // setComputerField: function (arr) {
+    //     this.board[arr[0]][arr[1]] = this.current;
+    //     let computerField = document.querySelector('[data-field="' + arr[0] + arr[1] + '"]');
+    //     let result = undefined;
 
-        // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
-        // np. przy inicjalizacji
-        if (this.current) {
-            computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-        } else {
-            computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-        }
-        result = Computer.setScore(game);
-        if (result !== undefined) {
-            this.prepareFinalBox(result);
-        }
-        this.current = this.player;
-    },
+    //     // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
+    //     // np. przy inicjalizacji
+    //     if (this.current) {
+    //         computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+    //     } else {
+    //         computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+    //     }
+    //     result = Computer.setScore(game);
+    //     if (result !== undefined) {
+    //         this.prepareFinalBox(result);
+    //     }
+    //     this.current = this.player;
+    // },
     // komputer przyjmuje tablicę z polem, które ma być zaznaczone
     // użytkownik przyjmuje obiekt event
     // 
@@ -701,6 +701,6 @@ QUnit.test('Computer 0 blocks winning for X', function (assert) {
     game.opponent = 0;
     game.activeTurn = 1;
     computer.minimax(game);
-    assert.ok( (computer.choice[0] === 0 && computer.choice[1] === 0), 'computer chooses [0,0]');
+    assert.ok( (computer.choice[0] === 0 && computer.choice[1] === 0) || (computer.choice[0] === 0 && computer.choice[2] === 0), 'computer chooses [0,0]');
 });
 
