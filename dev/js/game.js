@@ -1,3 +1,7 @@
+/**
+ * główna logika gry
+ * @class
+ */
 class Game {
     constructor () {
         this.player = 0;

@@ -1,7 +1,7 @@
 // @ts-check
 
 // dalszy workflow gry:
-// masa refaktoru w kodzie: najpierw własne, a potem wg Elii
+// refactor wg Elii
 // options: koloryzowanie znaków, które wygrały
 
 
