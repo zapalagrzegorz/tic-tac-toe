@@ -113,7 +113,9 @@ class Game {
         if (this.player === 1) {
             this.current = this.computer;
             this.opponent = this.player;
-            this.setBoardField(this.computerEngine.setFirstMove());
+            setTimeout( ()=> {
+                this.setBoardField(this.computerEngine.setFirstMove());
+            }, 2000);
         }
     }
 
