@@ -1,6 +1,5 @@
 /**
- * TODO wyodrębnić do nowego pliku 
- * może exporcik :-)
+ * Klasa odpowiadająca za logikę komputera 
  */
 class Computer {
     constructor () {
@@ -10,22 +9,12 @@ class Computer {
     /**
      * Zwraca wartość liczbową określającą stan gry:
      * 1 - wygrał gracz, '-1' - wygrał komputer, 0 - remis
-     * undefined - gdy gra się nie zakończyła - [czy to ma sens]
+     * undefined - gdy gra nie została rozstrzygnięta
      * 
-     *  Przyjmuje obiekt game przechowujący informacje o grze 
-     * 
-     * 
-     * Modyfikator static. Za MDN: Static method calls are made directly on the class and are not callable on instances of the class. Static methods are often used to create utility functions.
-     * [czy to ma sens?! skoro klasę ]
-     * 
-     * TODO 
-     * obliczanie wartości gry nie ma logicznego związku umieszczenie w klasie gracz-komputer
-     * ewidentnie należy do mechanizmu 'centralnego'
-     *
      * @param {object} game 
      * @return {number} The x value.
      */
-    static setScore (game) {
+    static getScore (game) {
         let draw = 0;
         let successPlayerVertical = 0;
         let successPlayerHorizontal = 0;
@@ -166,7 +155,7 @@ class Computer {
     minimax (game) {
 
         // return score if game over
-        let score = Computer.setScore(game);
+        let score = Computer.getScore(game);
         if (score !== undefined) return score;
 
         let scores = [];
@@ -199,6 +188,10 @@ class Computer {
             return scores[min_score_index];
         }
     }
+    /**
+     * Ustala pierwszy ruch komputera. Inaczej obliczenia trwają ok. 5 sek. a wybór pada na narożnik.
+     * @returns {object} HMTLelement
+     */
     setFirstMove () {
         let possibleMoves = [
             [0, 0],
@@ -206,8 +199,10 @@ class Computer {
             [2, 0],
             [2, 2]
         ];
-        let choice = Math.floor((Math.random() * 10 % 4));
-        return possibleMoves[choice];
+        const firstMove = Math.floor((Math.random() * 10 % 4));
+        this.choice = possibleMoves[firstMove];
+        const boardField = document.querySelector('[data-field="' + this.choice[0] + this.choice[1] + '"]');
+        return boardField;
     }
     /**
      * Perform computer move
@@ -220,6 +215,7 @@ class Computer {
         // TODO sprawdzić co się dzieje w minimaxie z activeTurn
         game.activeTurn = game.current;
         this.minimax(game);
-        game.setBoardField(this.choice);
+        const boardField = document.querySelector('[data-field="' + this.choice[0] + this.choice[1] + '"]');
+        game.setBoardField(boardField);
     }
 }

@@ -218,6 +218,20 @@ class Computer {
         let choice = Math.floor((Math.random() * 10 % 4));
         return possibleMoves[choice];
     }
+    /**
+     * Perform computer move
+     * @param {object} game 
+     */
+    setMove (game) {
+        game.current = game.computer;
+        game.opponent = game.player;
+        
+        // TODO sprawdzić co się dzieje w minimaxie z activeTurn
+        game.activeTurn = game.current;
+        this.minimax(game);
+        const boardField = document.querySelector('[data-field="' + this.choice[0] + this.choice[1] + '"]');
+        game.setBoardField(boardField);
+    }
 }
 
 
@@ -248,134 +262,88 @@ let game = {
     ],
     result: 0,
 
+     
     /**
-    //  * zaznacza pole gracza na planszy
-    //  * @param {object} event mouseEvent
-    //  */
-    // setPlayerField: function (event) {
-    //     let playerField = event.target;
-    //     let result;
-    //     let row;
-    //     let column;
-
-    //     // jeżeli zostało wybrane pole
-    //     if (playerField.dataset.field !== undefined) {
-    //         row = playerField.dataset.field[0];
-    //         column = playerField.dataset.field[1];
-    //     }
-    //     // sprawdzam czy docelowe pole nie zostało zajęte
-    //     // wartość dwa to umowna wartość wolnego pola
-    //     if (this.board[row][column] === 2) {
-    //         this.board[row][column] = this.current;
-    //         if (this.current) {
-    //             playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-    //         } else {
-    //             playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-    //         }
-
-    //         // TODO wyciagnąć jako funkcję, jeśli racjonalne
-    //         result = Computer.setScore(game);
-    //         if (result === undefined) {
-    //             this.current = this.computer;
-    //             this.opponent = this.player;
-    //             this.activeTurn = this.current;
-    //             computer.minimax(game);
-    //             game.setComputerField(computer.choice);
-    //         } else {
-    //             // FIXME funkcja końcowa
-    //             this.prepareFinalBox(result);
-    //         }
-    //     }
-    // },
-    // /**
-    //  * ustawia pole wartością komputera
-    //  * @param {number[]} arr 
-    //  */
-    // setComputerField: function (arr) {
-    //     this.board[arr[0]][arr[1]] = this.current;
-    //     let computerField = document.querySelector('[data-field="' + arr[0] + arr[1] + '"]');
-    //     let result = undefined;
-
-    //     // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
-    //     // np. przy inicjalizacji
-    //     if (this.current) {
-    //         computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-    //     } else {
-    //         computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-    //     }
-    //     result = Computer.setScore(game);
-    //     if (result !== undefined) {
-    //         this.prepareFinalBox(result);
-    //     }
-    //     this.current = this.player;
-    // },
-    // komputer przyjmuje tablicę z polem, które ma być zaznaczone
-    // użytkownik przyjmuje obiekt event
-    // 
+         * Określa pole gracza na planszy 
+         * @param {object} data HTMLelement
+         */
     setBoardField: function (data) {
-        if (Array.isArray(data)) {
-            // computer
-            this.board[data[0]][data[1]] = this.current;
-            let computerField = document.querySelector('[data-field="' + data[0] + data[1] + '"]');
-            let result = undefined;
+        let _this = this;
+        let boardField;
+        let result;
+        let row;
+        let column;
+           
+        /**
+             * Sprawdza czy ruch gracza jest prawidłowy
+             * @param {object} chosenField to jest object, property MouseEvent.target pochodzący z event'u 'click' Player'a
+             * @return {boolean}
+             */
+        function isPlayerValidMove (chosenField) {
 
-            // FIXME to wyciągnąć poza nawias - określić elementy html'u właściwe dla danej osoby już 
-            // np. przy inicjalizacji
-            if (this.current) {
-                computerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-            } else {
-                computerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+            // czy zostało wybrane pole gry i czy jest nadal wolne
+            if (chosenField.field !== undefined && _this.board[chosenField.field[0]][chosenField.field[1]] === 2) {
+                row = chosenField.field[0];
+                column = chosenField.field[1];
+                return true;
             }
-            result = Computer.setScore(game);
+        }
+           
+        /**
+             * Zaznacza wybrane pole w DOM
+             * @param {object} field HTMLelement 
+             */
+        function setBoardFieldDOM (field) {
+            if (_this.current === 1) {
+                field.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+            } else {
+                field.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+            }
+        } 
+    
+        if (data.target === undefined) {
+
+            // computer
+            row = data.dataset.field[0];
+            column = data.dataset.field[1];
+
+            // zaznaczenie na planszy wewnętrznej
+            this.board[row][column] = this.current;
+
+            // zaznaczenie na planszy DOM
+            setBoardFieldDOM (data);
+            result = Computer.getScore(game); 
             if (result !== undefined) {
                 this.prepareFinalBox(result);
             }
             this.current = this.player;
         } else {
+
             // player
-            let playerField = data.target;
-            let result;
-            let row;
-            let column;
-    
-            // jeżeli zostało wybrane pole
-            if (playerField.dataset.field !== undefined) {
-                row = playerField.dataset.field[0];
-                column = playerField.dataset.field[1];
-            }
-            // sprawdzam czy docelowe pole nie zostało zajęte
-            // wartość dwa to umowna wartość wolnego pola
-            if (this.board[row][column] === 2) {
+            boardField = data.target;
+        
+            if (isPlayerValidMove(boardField.dataset)) {
+
                 this.board[row][column] = this.current;
-                if (this.current) {
-                    playerField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
-                } else {
-                    playerField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
-                }
-    
-                // TODO wyciagnąć jako funkcję, jeśli racjonalne
+                setBoardFieldDOM (boardField);
+                    
                 result = Computer.setScore(game);
-                if (result === undefined) {
-                    this.current = this.computer;
-                    this.opponent = this.player;
-                    this.activeTurn = this.current;
-                    computer.minimax(game);
-                    game.setComputerField(computer.choice);
-                } else {
-                    // FIXME funkcja końcowa
+                if (result !== undefined) {
                     this.prepareFinalBox(result);
+                } else {
+                    computer.setMove(game);
                 }
             }
         }
-    }
+    },
 };
 
+/**
+ * Testy
+ * 
+ * Inicjacja zmiennych globalnych
+ */
 let computer = new Computer;
-game.board = [
-    [1, 2, 2],
-    [1, 2, 2],
-    [1, 2, 2]
-];
 game.current = 1;
 game.opponent = 0;
 
