@@ -134,10 +134,28 @@ class Game {
         const winner = result ? 'computer wins' : 'draw';
         this.elements.finalBox__result.textContent = winner;
         this.elements.modalBox.style.display = 'block';
-        
+
         // zwykła funkcja tworzy scope w którym this jest undefined; arrow function przekazuje scope
-        setTimeout( () => {
+        setTimeout(() => {
             this.elements.finalBox.classList.toggle('visible');
         }, 0);
+    }
+    replay () {
+        this.board = [
+            [2, 2, 2],
+            [2, 2, 2],
+            [2, 2, 2]
+        ];
+        this.player = 0;
+        this.opponent = 0;
+        this.current = 0;
+        this.result = 0;
+        this.elements.boardFields.forEach((value) => {
+            value.innerHTML = '';
+        });
+
+        this.elements.finalBox.classList.toggle('visible');
+        setTimeout(() => this.elements.initTextBox.classList.toggle('visible'), 1500);
+
     }
 }
