@@ -7,6 +7,7 @@ class Computer {
     constructor () {
         // kluczowa tablica przechowująca 'najlepszy' ruch
         this.choice = [];
+
     }
 
     /**
@@ -28,96 +29,120 @@ class Computer {
      * @return {number} The x value.
      */
     static getScore (game) {
-        let draw = 0;
-        let successPlayerVertical = 0;
-        let successPlayerHorizontal = 0;
-        let successOpponentVertical = 0;
-        let successOpponentHorizontal = 0;
-        let successPlayerDiagonal = 0;
-        let successOpponentDiagonal = 0;
-        let successPlayerDiagonalRev = 0;
-        let successOpponentDiagonalRev = 0;
+        const winCombos = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [6, 4, 2]
+        ];
+        // weż każdą z tablic sprawdź czy wartość z listy kombinacji jest równa wartości tablicy dla x
+        // jw. czy jest O
 
-        // if game player cannot win, we could skip him
-        // check column and row
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if (game.board[i][j] === game.current) {
-                    successPlayerVertical++;
-                    if (successPlayerVertical === 3) {
-                        // console.log('successPlayerVertical');
-                        return 1;
-                    }
-                }
-                if (game.board[j][i] === game.current) {
-                    successPlayerHorizontal++;
-                    if (successPlayerHorizontal === 3) {
-                        // console.log('successPlayerHorizontal');
-                        return 1;
-                    }
-                }
-                if (game.board[i][j] === game.opponent) {
-                    successOpponentVertical++;
-                    if (successOpponentVertical === 3) {
-                        // console.log('successOpponentVertical');
-                        return -1;
-                    }
-                }
-                if (game.board[j][i] === game.opponent) {
-                    successOpponentHorizontal++;
-                    if (successOpponentHorizontal === 3) {
-                        // console.log('successOpponentHorizontal');
-                        return -1;
-                    }
-                }
-                if (game.board[i][j] !== 2) {
-                    draw++;
-                }
-            }
-            // clear after each row/column
-            successPlayerVertical = successPlayerHorizontal = 0;
-            successOpponentVertical = successOpponentHorizontal = 0;
+        function currentWin (currentValue) {
+            return game.board[currentValue] === game.current;
         }
 
-        // diagonal forward
-        for (let i = 0; i < 3; i++) {
-            if (game.board[i][i] === game.current) {
-                successPlayerDiagonal++;
-                if (successPlayerDiagonal === 3) {
-                    // console.log('successPlayerDiagonal');
-                    return 1;
-                }
-            }
-            if (game.board[i][i] === game.opponent) {
-                successOpponentDiagonal++;
-                if (successOpponentDiagonal === 3) {
-                    // console.log('successOpponentDiagonal');
-                    return -1;
-                }
-            }
-        }
-        // diagonal backward
-        for (let i = 2, j = 0; i >= 0; i--, j++) {
-            if (game.board[i][j] === game.current) {
-                successPlayerDiagonalRev++;
-                if (successPlayerDiagonalRev === 3) {
-                    // console.log('successPlayerDiagonalBackward');
-                    return 1;
-                }
-            } else if (game.board[i][j] === game.opponent) {
-                successOpponentDiagonalRev++;
-                if (successOpponentDiagonalRev === 3) {
-                    // console.log('successOpponentDiagonalRev');
-                    return -1;
-                }
-            }
+        function opponentWin (currentValue) {
+            return game.board[currentValue] === game.opponent;
         }
 
-        if (draw === 9) {
-            return 0;
-        } else {
-            return undefined;
+        // sprawdź wartości na tablicy 
+        for (let i = 0, len = winCombos.length; i < len; i++) {
+            if (winCombos[i].every(currentWin)) {
+                return 1;
+            } else if (winCombos[i].every(opponentWin)) {
+                return -1;
+            }
         }
+        return undefined;
+        //#region
+
+        // // if game player cannot win, we could skip him
+        // // check column and row
+        // for (let i = 0; i < 3; i++) {
+        //     for (let j = 0; j < 3; j++) {
+        //         if (game.board[i][j] === game.current) {
+        //             successPlayerVertical++;
+        //             if (successPlayerVertical === 3) {
+        //                 // console.log('successPlayerVertical');
+        //                 return 1;
+        //             }
+        //         }
+        //         if (game.board[j][i] === game.current) {
+        //             successPlayerHorizontal++;
+        //             if (successPlayerHorizontal === 3) {
+        //                 // console.log('successPlayerHorizontal');
+        //                 return 1;
+        //             }
+        //         }
+        //         if (game.board[i][j] === game.opponent) {
+        //             successOpponentVertical++;
+        //             if (successOpponentVertical === 3) {
+        //                 // console.log('successOpponentVertical');
+        //                 return -1;
+        //             }
+        //         }
+        //         if (game.board[j][i] === game.opponent) {
+        //             successOpponentHorizontal++;
+        //             if (successOpponentHorizontal === 3) {
+        //                 // console.log('successOpponentHorizontal');
+        //                 return -1;
+        //             }
+        //         }
+        //         if (game.board[i][j] !== 2) {
+        //             draw++;
+        //         }
+        //     }
+        //     // clear after each row/column
+        //     successPlayerVertical = successPlayerHorizontal = 0;
+        //     successOpponentVertical = successOpponentHorizontal = 0;
+        // }
+
+        // // diagonal forward
+        // for (let i = 0; i < 3; i++) {
+        //     if (game.board[i][i] === game.current) {
+        //         successPlayerDiagonal++;
+        //         if (successPlayerDiagonal === 3) {
+        //             // console.log('successPlayerDiagonal');
+        //             return 1;
+        //         }
+        //     }
+        //     if (game.board[i][i] === game.opponent) {
+        //         successOpponentDiagonal++;
+        //         if (successOpponentDiagonal === 3) {
+        //             // console.log('successOpponentDiagonal');
+        //             return -1;
+        //         }
+        //     }
+        // }
+        // // diagonal backward
+        // for (let i = 2, j = 0; i >= 0; i--, j++) {
+        //     if (game.board[i][j] === game.current) {
+        //         successPlayerDiagonalRev++;
+        //         if (successPlayerDiagonalRev === 3) {
+        //             // console.log('successPlayerDiagonalBackward');
+        //             return 1;
+        //         }
+        //     } else if (game.board[i][j] === game.opponent) {
+        //         successOpponentDiagonalRev++;
+        //         if (successOpponentDiagonalRev === 3) {
+        //             // console.log('successOpponentDiagonalRev');
+        //             return -1;
+        //         }
+        //     }
+        // }
+
+        // if (draw === 9) {
+        //     return 0;
+        // } else {
+        //     return undefined;
+        // }
+
+        //#endregion 
     }
 
     /**
@@ -128,13 +153,10 @@ class Computer {
      */
     getAvailableMoves (game) {
         let availableMoves = [];
-        for (let i = 0; i <= 2; i++) {
-            for (let j = 0; j <= 2; j++) {
-                if (game.board[i][j] === 2) {
-                    availableMoves.push([i, j]);
-                }
-            }
-        }
+        game.forEach((element) => {
+            if (element === 2) availableMoves.push(element);
+
+        });
         return availableMoves;
     }
     /**
@@ -241,11 +263,7 @@ class Game {
         this.opponent = 1;
         this.activeTurn = 0;
         this.notActive = 0;
-        this.board = [
-            [2, 2, 2],
-            [2, 2, 2],
-            [2, 2, 2]
-        ];
+        this.board = [2, 2, 2, 2, 2, 2, 2, 2];
         this.result = 0;
         this.elements = {
 
@@ -369,13 +387,13 @@ class Game {
         const winner = result ? 'computer wins' : 'draw';
         this.elements.finalBox__result.textContent = winner;
         this.elements.modalBox.style.display = 'block';
-        
+
         // zwykła funkcja tworzy scope w którym this jest undefined; arrow function przekazuje scope
-        setTimeout( () => {
+        setTimeout(() => {
             this.elements.finalBox.classList.toggle('visible');
         }, 0);
     }
-    
+
 }
 
 
@@ -397,330 +415,360 @@ class Game {
  */
 let game = new Game();
 let computer = new Computer();
-game.current = 1;
-game.opponent = 0;
 
-// this test fails when located next to minimax assertions and run with all tests
-QUnit.test('Computer blocks winning for O', function (assert) {
+QUnit.module('static computer.getScore() method');
+QUnit.test('O is winning', function (assert) {
     game.board = [
-        [1, 2, 2],
-        [0, 0, 2],
-        [2, 2, 2]
+        1, 2, 2,
+        0, 0, 0,
+        2, 2, 2
     ];
-    game.current = 1;
-    game.computer = 1;
-    game.opponent = 0;
-    game.activeTurn = 1;
-    computer.minimax(game);
-    assert.ok((computer.choice[0] === 1 && computer.choice[1] === 2), 'computer chooses [1,2]');
-});
-
-QUnit.module('wygrywa krzyżyk - setScore()');
-
-QUnit.test('tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]', function (assert) {
-    game.board = [
-        [1, 2, 2],
-        [1, 2, 2],
-        [1, 2, 2]
-    ];
-    assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]');
-});
-
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [2, 1, 2],
-        [2, 1, 2],
-        [2, 1, 2]
-    ];
-    assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]');
-});
-
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [0, 2, 1],
-        [2, 2, 1],
-        [2, 1, 1]
-    ];
-    game.current = 1;
-    assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
-});
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [1, 1, 1],
-        [2, 2, 2],
-        [2, 2, 2]
-    ];
-    game.current = 1;
-    assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[1, 1, 1], [2, 2, 2], [2, 2, 2]]');
-});
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [2, 2, 2],
-        [1, 1, 1],
-        [2, 2, 2]
-    ];
-    game.current = 1;
-    assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[2, 2, 2], [1, 1, 1], [2, 2, 2]]');
-});
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [2, 2, 2],
-        [2, 2, 2],
-        [1, 1, 1]
-    ];
-    game.current = 1;
-    assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[2, 2, 2], [2, 2, 2], [1, 1, 1]]');
-});
-
-QUnit.module('Wygrywa kółko - setScore()');
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [0, 0, 0],
-        [2, 2, 2],
-        [2, 2, 2]
-    ];
-    assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[0, 0, 0], [2, 2, 2], [2, 2, 2]]');
-});
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [2, 2, 2],
-        [0, 0, 0],
-        [2, 2, 2]
-    ];
-    assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[2, 2, 2], [0, 0, 0], [2, 2, 2]]');
-});
-QUnit.test('tablica = [[2, 2, 2], [2, 2, 2], [0, 0, 0]]', function (assert) {
-    game.board = [
-        [2, 2, 2],
-        [2, 2, 2],
-        [0, 0, 0]
-    ];
-    assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[2, 2, 2], [2, 2, 2], [0, 0, 0]]');
-});
-QUnit.test('tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]', function (assert) {
-    game.board = [
-        [0, 2, 2],
-        [0, 2, 2],
-        [0, 2, 2]
-    ];
-    assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry, wygrywa kółko poziomo; tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]');
-});
-QUnit.test('tablica = [[2, 0, 2], [2, 0, 2], [2, 0, 2]]', function (assert) {
-    game.board = [
-        [2, 0, 2],
-        [2, 0, 2],
-        [2, 0, 2]
-    ];
-    assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[2, 0, 2], [2, 0, 2], [2, 0, 2]]');
-});
-QUnit.test('tablica = [[2, 2, 0], [2, 2, 0], [2, 2, 0]]', function (assert) {
-    game.board = [
-        [2, 2, 0],
-        [2, 2, 0],
-        [2, 2, 0]
-    ];
-    assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[2, 2, 0], [2, 2, 0], [2, 2, 0]]');
-});
-QUnit.test('tablica = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]', function (assert) {
-
-    game.board = [
-        [1, 2, 2],
-        [2, 1, 2],
-        [2, 2, 1]
-    ];
-    assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]');
-});
-QUnit.test('tablica = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]', function (assert) {
-    game.board = [
-        [2, 2, 1],
-        [2, 1, 2],
-        [1, 2, 2]
-    ];
-    assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie do tyłu = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]');
-});
-QUnit.test('tablica = [[0, 2, 2], [2, 0, 2], [2, 2, 0]]', function (assert) {
-    game.board = [
-        [0, 2, 2],
-        [2, 0, 2],
-        [2, 2, 0]
-    ];
-    assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry: wygrywa kółko po skosie = [[0, 2, 2], [2, 0, 2], [2, 2, 0]]');
-});
-QUnit.test('tablica = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]', function (assert) {
-    game.board = [
-        [2, 2, 0],
-        [2, 0, 2],
-        [0, 2, 2]
-    ];
-    assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry: wygrywa kółko po skosie do tyłu = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]');
-});
-QUnit.module('Remis - setScore()');
-QUnit.test('tablica = [[0, 0, 1], [1, 1, 0], [0, 1, 1]]', function (assert) {
-    game.board = [
-        [0, 0, 1],
-        [1, 1, 0],
-        [0, 1, 1]
-    ];
-    assert.deepEqual(Computer.getScore(game), 0, 'Remis, koniec gry; tablica = [[0, 0, 1], [1, 1, 0], [0, 1, 1]]');
-});
-QUnit.test('tablica = [[0, 1, 0], [1, 0, 0], [1, 0, 1]]', function (assert) {
-    game.board = [
-        [0, 1, 0],
-        [1, 0, 0],
-        [1, 0, 1]
-    ];
-    assert.deepEqual(Computer.getScore(game), 0, 'Remis, koniec gry; tablica = [[0, 1, 0], [1, 0, 0], [1, 0, 1]]');
-});
-
-QUnit.module('Dalsza gra - setScore()');
-
-QUnit.test('tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]', function (assert) {
-    game.board = [
-        [2, 0, 1],
-        [1, 1, 0],
-        [0, 1, 1]
-    ];
-    assert.deepEqual(Computer.getScore(game), undefined, 'Dalsza gra tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]');
-});
-
-
-QUnit.module('Dostępne ruchy - computer.getAvailableMoves()');
-
-
-game.board = [
-    [2, 2, 2],
-    [2, 2, 2],
-    [2, 2, 2]
-];
-console.log(computer.getAvailableMoves(game));
-
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [2, 2, 2],
-        [2, 2, 2],
-        [2, 2, 2]
-    ];
-    assert.deepEqual(computer.getAvailableMoves(game), [
-        [0, 0],
-        [0, 1],
-        [0, 2],
-        [1, 0],
-        [1, 1],
-        [1, 2],
-        [2, 0],
-        [2, 1],
-        [2, 2]
-    ], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
-});
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [0, 2, 0],
-        [1, 2, 1],
-        [1, 0, 2]
-    ];
-    assert.deepEqual(computer.getAvailableMoves(game), [
-        [0, 1],
-        [1, 1],
-        [2, 2]
-    ], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
-});
-
-QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
-    game.board = [
-        [0, 2, 2],
-        [2, 2, 1],
-        [0, 0, 1]
-    ];
-    assert.deepEqual(computer.getAvailableMoves(game), [
-        [0, 1],
-        [0, 2],
-        [1, 0],
-        [1, 1]
-    ], 'dostępne ruchy z tablicy [[0, 2, 2], [2, 2, 1], [0, 0, 1]] to [0,1],[0,2],[1,0],[1,1]');
-});
-
-QUnit.module('computer methods');
-
-QUnit.test('pseudo-losowy pierwszy ruch', function (assert) {
-    let arr = computer.setFirstMove();
-    assert.ok(((arr[0] === 0 || arr[0] === 2) && (arr[1] === 0 || arr[1] === 2)), 'Wyznaczono pierwszy ruch');
-});
-
-QUnit.module('setting board field');
-QUnit.test('setting board field', function (assert) {
-    let boardFields = document.querySelectorAll('.board__field');
-    boardFields.forEach((value) => value.addEventListener('click', game.setBoardField.bind(game), false));
     game.current = 0;
-    game.player = 0;
-    $('[data-field="00"]').trigger('click');
-    // Verify expected behavior
-    assert.deepEqual(game.board[0][0], 0, 'player mouse click was set');
-});
-
-QUnit.module('minimax algoritm');
-
-QUnit.test('Second move for computer X if O choose center', function (assert) {
-    game.board = [
-        [2, 2, 2],
-        [2, 0, 2],
-        [2, 2, 2]
-    ];
-    game.computer = 1;
-    game.activeTurn = 1;
     computer.minimax(game);
-    assert.ok((computer.choice[0] === 0 && computer.choice[1] === 0), 'computer chooses [0,0]');
+    assert.deepEqual(computer.minimax(game), 1, 'Wygrało kółko');
+});
+QUnit.test('static computer.getScore() method', function (assert) {
+    game.board = [
+        1, 2, 2,
+        0, 1, 0,
+        2, 2, 1
+    ];
+    game.current = 0;
+    computer.minimax(game);
+    assert.deepEqual(computer.minimax(game), -1, 'Wygrał krzyżyk');
 });
 
-QUnit.test('Computer X blocks winning for O', function (assert) {
+QUnit.test('static computer.getScore() method', function (assert) {
     game.board = [
-        [1, 2, 0],
-        [0, 0, 1],
-        [2, 2, 2]
+        1, 0, 1,
+        0, 1, 0,
+        1, 0, 1
     ];
-    game.computer = 1;
-    game.activeTurn = 1;
+    game.current = 0;
     computer.minimax(game);
-    assert.ok((computer.choice[0] === 2 && computer.choice[1] === 0), 'computer chooses [2,0]');
+    assert.deepEqual(computer.minimax(game), -1, 'Wygrał krzyżyk');
 });
+// 
+// QUnit.test('Computer blocks winning for O', function (assert) {
+//     game.board = [
+//         1, 2, 2,
+//         0, 0, 2,
+//         2, 2, 2
+//     ];
+//     game.current = 1;
+//     game.computer = 1;
+//     game.opponent = 0;
+//     game.activeTurn = 1;
+//     computer.minimax(game);
+//     assert.ok((computer.choice[0] === 1 && computer.choice[1] === 2), 'computer chooses [1,2]');
+// });
+// 
+// QUnit.module('wygrywa krzyżyk - setScore()');
+// 
+// QUnit.test('tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]', function (assert) {
+//     game.board = [
+//         [1, 2, 2],
+//         [1, 2, 2],
+//         [1, 2, 2]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[1, 2, 2], [1, 2, 2], [1, 2, 2]]');
+// });
+// 
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [2, 1, 2],
+//         [2, 1, 2],
+//         [2, 1, 2]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]');
+// });
+// 
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [0, 2, 1],
+//         [2, 2, 1],
+//         [2, 1, 1]
+//     ];
+//     game.current = 1;
+//     assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk poziomo; tablica = [[0, 2, 1], [2, 2, 1], [2, 1, 1]]');
+// });
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [1, 1, 1],
+//         [2, 2, 2],
+//         [2, 2, 2]
+//     ];
+//     game.current = 1;
+//     assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[1, 1, 1], [2, 2, 2], [2, 2, 2]]');
+// });
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [2, 2, 2],
+//         [1, 1, 1],
+//         [2, 2, 2]
+//     ];
+//     game.current = 1;
+//     assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[2, 2, 2], [1, 1, 1], [2, 2, 2]]');
+// });
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [2, 2, 2],
+//         [2, 2, 2],
+//         [1, 1, 1]
+//     ];
+//     game.current = 1;
+//     assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry, wygrywa krzyżyk pionowo; tablica = [[2, 2, 2], [2, 2, 2], [1, 1, 1]]');
+// });
+// 
+// QUnit.module('Wygrywa kółko - setScore()');
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [0, 0, 0],
+//         [2, 2, 2],
+//         [2, 2, 2]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[0, 0, 0], [2, 2, 2], [2, 2, 2]]');
+// });
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [2, 2, 2],
+//         [0, 0, 0],
+//         [2, 2, 2]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[2, 2, 2], [0, 0, 0], [2, 2, 2]]');
+// });
+// QUnit.test('tablica = [[2, 2, 2], [2, 2, 2], [0, 0, 0]]', function (assert) {
+//     game.board = [
+//         [2, 2, 2],
+//         [2, 2, 2],
+//         [0, 0, 0]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry, wygrywa kółko pionowo; tablica = [[2, 2, 2], [2, 2, 2], [0, 0, 0]]');
+// });
+// QUnit.test('tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]', function (assert) {
+//     game.board = [
+//         [0, 2, 2],
+//         [0, 2, 2],
+//         [0, 2, 2]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry, wygrywa kółko poziomo; tablica = [[0, 2, 2], [0, 2, 2], [0, 2, 2]]');
+// });
+// QUnit.test('tablica = [[2, 0, 2], [2, 0, 2], [2, 0, 2]]', function (assert) {
+//     game.board = [
+//         [2, 0, 2],
+//         [2, 0, 2],
+//         [2, 0, 2]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[2, 0, 2], [2, 0, 2], [2, 0, 2]]');
+// });
+// QUnit.test('tablica = [[2, 2, 0], [2, 2, 0], [2, 2, 0]]', function (assert) {
+//     game.board = [
+//         [2, 2, 0],
+//         [2, 2, 0],
+//         [2, 2, 0]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry: wygrywa kółko poziomo; tablica = [[2, 2, 0], [2, 2, 0], [2, 2, 0]]');
+// });
+// QUnit.test('tablica = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]', function (assert) {
 
-QUnit.test('Computer X blocks winning for O', function (assert) {
-    game.board = [
-        [1, 2, 2],
-        [0, 0, 2],
-        [2, 2, 2]
-    ];
-    game.current = 1;
-    game.computer = 1;
-    game.opponent = 0;
-    game.activeTurn = 1;
-    computer.minimax(game);
-    assert.ok((computer.choice[0] === 1 && computer.choice[1] === 2), 'computer chooses [1,2]');
-});
-
-QUnit.test('Computer X blocks winning for O', function (assert) {
-    game.board = [
-        [1, 2, 0],
-        [0, 0, 1],
-        [2, 2, 2]
-    ];
-    game.current = 1;
-    game.computer = 1;
-    game.opponent = 0;
-    game.activeTurn = 1;
-    computer.minimax(game);
-    assert.ok((computer.choice[0] === 2 && computer.choice[1] === 0), 'computer chooses [2,0]');
-});
-
-QUnit.test('Computer 0 blocks winning for X', function (assert) {
-    game.board = [
-        [2, 2, 2],
-        [2, 1, 2],
-        [0, 2, 2]
-    ];
-    game.current = 1;
-    game.computer = 1;
-    game.opponent = 0;
-    game.activeTurn = 1;
-    computer.minimax(game);
-    assert.ok((computer.choice[0] === 0 && computer.choice[1] === 0) || (computer.choice[0] === 0 && computer.choice[2] === 0), 'computer chooses [0,0]');
-});
+//     game.board = [
+//         [1, 2, 2],
+//         [2, 1, 2],
+//         [2, 2, 1]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie = [[1, 2, 2], [2, 1, 2], [2, 2, 1]]');
+// });
+// QUnit.test('tablica = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]', function (assert) {
+//     game.board = [
+//         [2, 2, 1],
+//         [2, 1, 2],
+//         [1, 2, 2]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), 1, 'Koniec gry: wygrywa krzyżyk po skosie do tyłu = [[2, 2, 1], [2, 1, 2], [1, 2, 2]]');
+// });
+// QUnit.test('tablica = [[0, 2, 2], [2, 0, 2], [2, 2, 0]]', function (assert) {
+//     game.board = [
+//         [0, 2, 2],
+//         [2, 0, 2],
+//         [2, 2, 0]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry: wygrywa kółko po skosie = [[0, 2, 2], [2, 0, 2], [2, 2, 0]]');
+// });
+// QUnit.test('tablica = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]', function (assert) {
+//     game.board = [
+//         [2, 2, 0],
+//         [2, 0, 2],
+//         [0, 2, 2]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), -1, 'Koniec gry: wygrywa kółko po skosie do tyłu = [[2, 2, 0], [2, 0, 2], [0, 2, 2]]');
+// });
+// QUnit.module('Remis - setScore()');
+// QUnit.test('tablica = [[0, 0, 1], [1, 1, 0], [0, 1, 1]]', function (assert) {
+//     game.board = [
+//         [0, 0, 1],
+//         [1, 1, 0],
+//         [0, 1, 1]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), 0, 'Remis, koniec gry; tablica = [[0, 0, 1], [1, 1, 0], [0, 1, 1]]');
+// });
+// QUnit.test('tablica = [[0, 1, 0], [1, 0, 0], [1, 0, 1]]', function (assert) {
+//     game.board = [
+//         [0, 1, 0],
+//         [1, 0, 0],
+//         [1, 0, 1]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), 0, 'Remis, koniec gry; tablica = [[0, 1, 0], [1, 0, 0], [1, 0, 1]]');
+// });
+// 
+// QUnit.module('Dalsza gra - setScore()');
+// 
+// QUnit.test('tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]', function (assert) {
+//     game.board = [
+//         [2, 0, 1],
+//         [1, 1, 0],
+//         [0, 1, 1]
+//     ];
+//     assert.deepEqual(Computer.getScore(game), undefined, 'Dalsza gra tablica = [[2, 0, 1], [1, 1, 0], [0, 1, 1]]');
+// });
+// 
+// 
+// QUnit.module('Dostępne ruchy - computer.getAvailableMoves()');
+// 
+// 
+// game.board = [
+//     [2, 2, 2],
+//     [2, 2, 2],
+//     [2, 2, 2]
+// ];
+// console.log(computer.getAvailableMoves(game));
+// 
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [2, 2, 2],
+//         [2, 2, 2],
+//         [2, 2, 2]
+//     ];
+//     assert.deepEqual(computer.getAvailableMoves(game), [
+//         [0, 0],
+//         [0, 1],
+//         [0, 2],
+//         [1, 0],
+//         [1, 1],
+//         [1, 2],
+//         [2, 0],
+//         [2, 1],
+//         [2, 2]
+//     ], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
+// });
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [0, 2, 0],
+//         [1, 2, 1],
+//         [1, 0, 2]
+//     ];
+//     assert.deepEqual(computer.getAvailableMoves(game), [
+//         [0, 1],
+//         [1, 1],
+//         [2, 2]
+//     ], 'dostępne ruchy z tablicy [[0, 2, 0],[1, 2, 1],[1, 0, 2]] to 0,1, 1,1, 2,2');
+// });
+// 
+// QUnit.test('tablica = [[2, 1, 2], [2, 1, 2], [2, 1, 2]]', function (assert) {
+//     game.board = [
+//         [0, 2, 2],
+//         [2, 2, 1],
+//         [0, 0, 1]
+//     ];
+//     assert.deepEqual(computer.getAvailableMoves(game), [
+//         [0, 1],
+//         [0, 2],
+//         [1, 0],
+//         [1, 1]
+//     ], 'dostępne ruchy z tablicy [[0, 2, 2], [2, 2, 1], [0, 0, 1]] to [0,1],[0,2],[1,0],[1,1]');
+// });
+// 
+// QUnit.module('computer methods');
+// 
+// QUnit.test('pseudo-losowy pierwszy ruch', function (assert) {
+//     let arr = computer.setFirstMove();
+//     assert.ok(((arr[0] === 0 || arr[0] === 2) && (arr[1] === 0 || arr[1] === 2)), 'Wyznaczono pierwszy ruch');
+// });
+// 
+// QUnit.module('setting board field');
+// QUnit.test('setting board field', function (assert) {
+//     let boardFields = document.querySelectorAll('.board__field');
+//     boardFields.forEach((value) => value.addEventListener('click', game.setBoardField.bind(game), false));
+//     game.current = 0;
+//     game.player = 0;
+//     $('[data-field="00"]').trigger('click');
+//     // Verify expected behavior
+//     assert.deepEqual(game.board[0][0], 0, 'player mouse click was set');
+// });
+// 
+// QUnit.module('minimax algoritm');
+// 
+// QUnit.test('Second move for computer X if O choose center', function (assert) {
+//     game.board = [
+//         [2, 2, 2],
+//         [2, 0, 2],
+//         [2, 2, 2]
+//     ];
+//     game.computer = 1;
+//     game.activeTurn = 1;
+//     computer.minimax(game);
+//     assert.ok((computer.choice[0] === 0 && computer.choice[1] === 0), 'computer chooses [0,0]');
+// });
+// 
+// QUnit.test('Computer X blocks winning for O', function (assert) {
+//     game.board = [
+//         [1, 2, 0],
+//         [0, 0, 1],
+//         [2, 2, 2]
+//     ];
+//     game.computer = 1;
+//     game.activeTurn = 1;
+//     computer.minimax(game);
+//     assert.ok((computer.choice[0] === 2 && computer.choice[1] === 0), 'computer chooses [2,0]');
+// });
+// 
+// QUnit.test('Computer X blocks winning for O', function (assert) {
+//     game.board = [
+//         [1, 2, 2],
+//         [0, 0, 2],
+//         [2, 2, 2]
+//     ];
+//     game.current = 1;
+//     game.computer = 1;
+//     game.opponent = 0;
+//     game.activeTurn = 1;
+//     computer.minimax(game);
+//     assert.ok((computer.choice[0] === 1 && computer.choice[1] === 2), 'computer chooses [1,2]');
+// });
+// 
+// QUnit.test('Computer X blocks winning for O', function (assert) {
+//     game.board = [
+//         [1, 2, 0],
+//         [0, 0, 1],
+//         [2, 2, 2]
+//     ];
+//     game.current = 1;
+//     game.computer = 1;
+//     game.opponent = 0;
+//     game.activeTurn = 1;
+//     computer.minimax(game);
+//     assert.ok((computer.choice[0] === 2 && computer.choice[1] === 0), 'computer chooses [2,0]');
+// });
+// 
+// QUnit.test('Computer 0 blocks winning for X', function (assert) {
+//     game.board = [
+//         [2, 2, 2],
+//         [2, 1, 2],
+//         [0, 2, 2]
+//     ];
+//     game.current = 1;
+//     game.computer = 1;
+//     game.opponent = 0;
+//     game.activeTurn = 1;
+//     computer.minimax(game);
+//     assert.ok((computer.choice[0] === 0 && computer.choice[1] === 0) || (computer.choice[0] === 0 && computer.choice[2] === 0), 'computer chooses [0,0]');
+// });
