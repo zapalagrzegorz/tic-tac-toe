@@ -1,3 +1,5 @@
+// import engine as engine
+
 /**
  * główna logika gry
  * @class
@@ -10,12 +12,8 @@ class Game {
         this.opponent = 1;
         this.activeTurn = 0;
         this.notActive = 0;
-        this.board = [
-            [2, 2, 2],
-            [2, 2, 2],
-            [2, 2, 2]
-        ];
-        this.result = 0;
+        this.board = [ 2, 2, 2, 2, 2, 2, 2, 2, 2];
+        this.result = undefined;
         this.elements = {
 
             finalBox: document.querySelector('#finalBox'),
@@ -34,13 +32,12 @@ class Game {
     /**
      * Określa pole gracza na planszy 
      * @param {object} data HTMLelement
+     * @param {string} playterType computer | player
      */
-    setBoardField (data) {
+    setBoardField (data, playerType) {
         let _this = this;
         let boardField;
         let result;
-        let row;
-        let column;
 
         /**
          * Sprawdza czy ruch gracza jest prawidłowy
@@ -50,50 +47,46 @@ class Game {
         function isPlayerValidMove (chosenField) {
 
             // czy zostało wybrane pole gry i czy jest nadal wolne
-            if (chosenField.field !== undefined && _this.board[chosenField.field[0]][chosenField.field[1]] === 2) {
-                row = chosenField.field[0];
-                column = chosenField.field[1];
+            if (chosenField.field !== undefined && _this.board[chosenField.field] === 2) {
                 return true;
             }
         }
 
         /**
          * Zaznacza wybrane pole w DOM
-         * @param {object} field HTMLelement 
+         * @param {number} fieldIndex index of board field 
          */
-        function setBoardFieldDOM (field) {
+        function setBoardFieldDOM (fieldIndex) {
+            let boardField = document.querySelector('[data-field="' + fieldIndex + '"]');
             if (_this.current === 1) {
-                field.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
+                boardField.innerHTML = '<svg class="board__icon board__icon--shapes"><use xlink:href="#shapes"/></svg>';
             } else {
-                field.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
+                boardField.innerHTML = '<svg class="board__icon board__icon--circle"><use xlink:href="#circle"/></svg>';
             }
         }
 
-        if (data.target === undefined) {
-
-            // computer
-            row = data.dataset.field[0];
-            column = data.dataset.field[1];
+        if (playerType === 'computer') {
 
             // zaznaczenie na planszy wewnętrznej
-            this.board[row][column] = this.current;
+            this.board[data] = this.current;
 
-            // zaznaczenie na planszy DOM
             setBoardFieldDOM(data);
+
             result = Computer.getScore(this);
             if (result !== undefined) {
                 this.prepareFinalBox(result);
             }
+
             this.current = this.player;
+        // player
         } else {
 
-            // player
-            boardField = data.target;
+            boardField = event.target;
 
             if (isPlayerValidMove(boardField.dataset)) {
-
-                this.board[row][column] = this.current;
-                setBoardFieldDOM(boardField);
+                const boardTarget = boardField.dataset.field;
+                this.board[boardTarget] = this.current;
+                setBoardFieldDOM(boardTarget);
 
                 result = Computer.getScore(this);
                 if (result !== undefined) {
@@ -117,9 +110,7 @@ class Game {
         if (this.player === 1) {
             this.current = this.computer;
             this.opponent = this.player;
-            setTimeout( ()=> {
-                this.setBoardField(this.computerEngine.setFirstMove());
-            }, 2000);
+            this.setBoardField(this.computerEngine.setFirstMove(), 'computer');
         }
     }
 
@@ -147,15 +138,11 @@ class Game {
         }, 0);
     }
     replay () {
-        this.board = [
-            [2, 2, 2],
-            [2, 2, 2],
-            [2, 2, 2]
-        ];
+        this.board = [2, 2, 2, 2, 2, 2, 2, 2, 2];
         this.player = 0;
         this.opponent = 0;
         this.current = 0;
-        this.result = 0;
+        this.result = undefined;
         this.elements.boardFields.forEach((value) => {
             value.innerHTML = '';
         });

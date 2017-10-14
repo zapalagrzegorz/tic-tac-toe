@@ -9,125 +9,78 @@ class Computer {
     /**
      * Zwraca wartość liczbową określającą stan gry:
      * 1 - wygrał gracz, '-1' - wygrał komputer, 0 - remis
-     * undefined - gdy gra nie została rozstrzygnięta
+     * undefined - gdy gra się nie zakończyła - [czy to ma sens]
      * 
+     *  Przyjmuje obiekt game przechowujący informacje o grze 
+     * 
+     * 
+     * Modyfikator static. Za MDN: Static method calls are made directly on the class and are not callable on instances of the class. Static methods are often used to create utility functions.
+     * [czy to ma sens?! skoro klasę ]
+     * 
+     *
      * @param {object} game 
      * @return {number} The x value.
      */
     static getScore (game) {
-        let draw = 0;
-        let successPlayerVertical = 0;
-        let successPlayerHorizontal = 0;
-        let successOpponentVertical = 0;
-        let successOpponentHorizontal = 0;
-        let successPlayerDiagonal = 0;
-        let successOpponentDiagonal = 0;
-        let successPlayerDiagonalRev = 0;
-        let successOpponentDiagonalRev = 0;
+        const winCombos = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [6, 4, 2]
+        ];
 
-        // if game player cannot win, we could skip him
-        // check column and row
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if (game.board[i][j] === game.current) {
-                    successPlayerVertical++;
-                    if (successPlayerVertical === 3) {
-                        // console.log('successPlayerVertical');
-                        return 1;
-                    }
-                }
-                if (game.board[j][i] === game.current) {
-                    successPlayerHorizontal++;
-                    if (successPlayerHorizontal === 3) {
-                        // console.log('successPlayerHorizontal');
-                        return 1;
-                    }
-                }
-                if (game.board[i][j] === game.opponent) {
-                    successOpponentVertical++;
-                    if (successOpponentVertical === 3) {
-                        // console.log('successOpponentVertical');
-                        return -1;
-                    }
-                }
-                if (game.board[j][i] === game.opponent) {
-                    successOpponentHorizontal++;
-                    if (successOpponentHorizontal === 3) {
-                        // console.log('successOpponentHorizontal');
-                        return -1;
-                    }
-                }
-                if (game.board[i][j] !== 2) {
-                    draw++;
-                }
-            }
-            // clear after each row/column
-            successPlayerVertical = successPlayerHorizontal = 0;
-            successOpponentVertical = successOpponentHorizontal = 0;
+        let draw;
+        // weż każdą z tablic sprawdź czy wartość z listy kombinacji jest równa wartości tablicy gry dla x
+        // jw. czy jest O
+
+        function currentWin (currentValue) {
+            return game.board[currentValue] === game.current;
         }
 
-        // diagonal forward
-        for (let i = 0; i < 3; i++) {
-            if (game.board[i][i] === game.current) {
-                successPlayerDiagonal++;
-                if (successPlayerDiagonal === 3) {
-                    // console.log('successPlayerDiagonal');
-                    return 1;
-                }
-            }
-            if (game.board[i][i] === game.opponent) {
-                successOpponentDiagonal++;
-                if (successOpponentDiagonal === 3) {
-                    // console.log('successOpponentDiagonal');
-                    return -1;
-                }
-            }
-        }
-        // diagonal backward
-        for (let i = 2, j = 0; i >= 0; i--, j++) {
-            if (game.board[i][j] === game.current) {
-                successPlayerDiagonalRev++;
-                if (successPlayerDiagonalRev === 3) {
-                    // console.log('successPlayerDiagonalBackward');
-                    return 1;
-                }
-            } else if (game.board[i][j] === game.opponent) {
-                successOpponentDiagonalRev++;
-                if (successOpponentDiagonalRev === 3) {
-                    // console.log('successOpponentDiagonalRev');
-                    return -1;
-                }
-            }
+        function opponentWin (currentValue) {
+            return game.board[currentValue] === game.opponent;
         }
 
-        if (draw === 9) {
-            return 0;
-        } else {
-            return undefined;
+        // sprawdź wartości na tablicy 
+        for (let i = 0, len = winCombos.length; i < len; i++) {
+            if (winCombos[i].every(currentWin)) {
+                return 1;
+            } else if (winCombos[i].every(opponentWin)) {
+                return -1;
+            }
         }
+        // check for draw
+        draw = game.board.every( (value, index) => {
+            return game.board[index] !== 2;   
+        }); 
+        if (draw) {
+            return 0;  
+        }
+        return undefined;
     }
 
     /**
      * Zwraca tablicę dopuszczalnych ruchów
-     * TODO zmienić na tablicę - obecnie jest obiekt
-     * number[]
-     * @param {Object} game 
+     * 
+     * @param {number[]} game 
+     * @returns {number[]} 
      */
-    getAvailableMoves (game) {
+    getAvailableMoves (board) {
         let availableMoves = [];
-        for (let i = 0; i <= 2; i++) {
-            for (let j = 0; j <= 2; j++) {
-                if (game.board[i][j] === 2) {
-                    availableMoves.push([i, j]);
-                }
-            }
-        }
+        board.forEach((element, index) => {
+            if (element === 2) availableMoves.push(index);
+        });
         return availableMoves;
     }
+
     /**
      * Funkcja pomocnicza dla algorytmu minimax
      * Generuje wariant stanu gry 
-     * @param {number[]} move 
+     * @param {number} move 
      * @param {Object} game 
      */
     getNewState (move, game) {
@@ -138,13 +91,15 @@ class Computer {
         // aby zrobić deep copy MDN rekomenduje parse i stringify obiektu JSON
         let newGame = JSON.parse(JSON.stringify(game));
 
-        newGame.board[move[0]][move[1]] = newGame.activeTurn;
+        newGame.board[move] = newGame.activeTurn;
+
         // kolejny ruch wykonuje drugi z graczy
         newGame.activeTurn = (newGame.activeTurn === 1) ? 0 : 1;
         // newGame.notActive = (newGame.activeTurn === 1) ? 0 : 1;
 
         return newGame;
     }
+
     /**
      * 
      * Wyznacza ruch komputera na podstawie algorytmu minimax
@@ -153,57 +108,53 @@ class Computer {
      * @return {number} The x value.
      */
     minimax (game) {
-
+        
         // return score if game over
         let score = Computer.getScore(game);
         if (score !== undefined) return score;
-
+        
         let scores = [];
         let moves = [];
-
-        // Populate the scores array, recursing as needed
-        this.getAvailableMoves(game).forEach(function iterateMoves (move) {
-
+        
+        // Populate the scores indexay, recursing as needed
+        this.getAvailableMoves(game.board).forEach(function iterateMoves (move) {
+        
             let possibleGame = this.getNewState(move, game);
-
+        
             scores.push(this.minimax(possibleGame));
-
+        
             moves.push(move);
         }, this);
-
+        
         // Do the min or the max calculation
         // This is the max calculation
-        // TODO - styl zmiennych i nazw funkcji
         // 
         if (game.activeTurn === game.current) {
             let max_score_index = scores.indexOf(Math.max(...scores));
-
+        
             this.choice = moves[max_score_index];
             return scores[max_score_index];
         } else {
-
+        
             // This is the min calculation
             let min_score_index = scores.indexOf(Math.min(...scores));
             this.choice = moves[min_score_index];
             return scores[min_score_index];
         }
     }
+
     /**
-     * Ustala pierwszy ruch komputera. Inaczej obliczenia trwają ok. 5 sek. a wybór pada na narożnik.
-     * @returns {object} HMTLelement
+     * Gets first move for computer
+     * @return {number} pseudo-random first choice of computer
+     *   minimax on empty table always generates place [0,0] as the best choice, but it takes around 5 secs
+     *  to avoid that, generate pseudo-random move which is equivalent to that
      */
     setFirstMove () {
-        let possibleMoves = [
-            [0, 0],
-            [0, 2],
-            [2, 0],
-            [2, 2]
-        ];
-        const firstMove = Math.floor((Math.random() * 10 % 4));
-        this.choice = possibleMoves[firstMove];
-        const boardField = document.querySelector('[data-field="' + this.choice[0] + this.choice[1] + '"]');
-        return boardField;
+        let possibleMoves = [0, 2, 6, 8];
+        let choice = Math.floor((Math.random() * 10 % 4));
+        return possibleMoves[choice];
     }
+
     /**
      * Perform computer move
      * @param {object} game 
@@ -211,11 +162,10 @@ class Computer {
     setMove (game) {
         game.current = game.computer;
         game.opponent = game.player;
-        
-        // TODO sprawdzić co się dzieje w minimaxie z activeTurn
         game.activeTurn = game.current;
+
+
         this.minimax(game);
-        const boardField = document.querySelector('[data-field="' + this.choice[0] + this.choice[1] + '"]');
-        game.setBoardField(boardField);
+        game.setBoardField(this.choice, 'computer');
     }
 }
