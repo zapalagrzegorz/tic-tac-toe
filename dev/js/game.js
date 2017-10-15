@@ -4,6 +4,10 @@
  * główna logika gry
  * @class
  */
+// zostawiam dla celów dokumentacyjnych używania modułów ES6 (koniecznie trzeba najpier babel a potem browserify)
+// import { Computer } from "./computer-player";
+
+// export 
 class Game {
     constructor () {
         this.player = 0;
@@ -33,8 +37,9 @@ class Game {
      * Określa pole gracza na planszy 
      * @param {object} data HTMLelement
      * @param {string} playterType computer | player
+     * @param {object} event mozilla event obsługuje jako parametr, a chrome jako global window.event
      */
-    setBoardField (data, playerType) {
+    setBoardField (data, playerType, event) {
         let _this = this;
         let boardField;
         let result;
@@ -81,7 +86,7 @@ class Game {
         // player
         } else {
 
-            boardField = event.target;
+            boardField = event.target || window.event.target;
 
             if (isPlayerValidMove(boardField.dataset)) {
                 const boardTarget = boardField.dataset.field;
