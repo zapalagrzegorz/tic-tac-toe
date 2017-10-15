@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
         game.elements.boardFields.forEach((value) => value.addEventListener('click', game.setBoardField.bind(game, 0, 'player'), false));
         game.elements.finalBox__tryAgain.addEventListener('click', game.replay.bind(game), false);
         game.elements.modalBox.style.display = 'initial';
+        game.elements.finalBox.style.display = 'block';
         game.elements.initTextBox.classList.toggle('visible');
 
     })();
