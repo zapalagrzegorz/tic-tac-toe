@@ -21,7 +21,7 @@ class Game {
         this.elements = {
 
             finalBox: document.querySelector('#finalBox'),
-            modalBox: document.body.querySelector('.modal'),
+            modalBox: document.querySelector('.modal'),
             initTextBox: document.querySelector('#initBox'),
             finalBox__result: document.querySelector('#finalBox__result'),
             finalBox__tryAgain: document.querySelector('#finalBox__tryAgain'),
@@ -79,7 +79,7 @@ class Game {
 
             result = Computer.getScore(this);
             if (result !== undefined) {
-                this.prepareFinalBox(result);
+                this.setWinner(result);
             }
 
             this.current = this.player;
@@ -95,7 +95,7 @@ class Game {
 
                 result = Computer.getScore(this);
                 if (result !== undefined) {
-                    this.prepareFinalBox(result);
+                    this.setWinner(result);
                 } else {
                     this.computerEngine.setMove(this);
                 }
@@ -132,7 +132,7 @@ class Game {
      * Wywołuje animację dla końcowego dialogu
      * @param {number} result 
      */
-    prepareFinalBox (result) {
+    setWinner (result) {
         const winner = result ? 'computer wins' : 'draw';
         this.elements.finalBox__result.textContent = winner;
         this.elements.modalBox.style.display = 'block';
@@ -142,6 +142,7 @@ class Game {
             this.elements.finalBox.classList.toggle('visible');
         }, 0);
     }
+    
     replay () {
         this.board = [2, 2, 2, 2, 2, 2, 2, 2, 2];
         this.player = 0;
