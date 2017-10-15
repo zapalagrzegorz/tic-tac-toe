@@ -1,22 +1,19 @@
 /**
  * Klasa odpowiadająca za logikę komputera 
  */
+// export 
 class Computer {
     constructor () {
         // kluczowa tablica przechowująca 'najlepszy' ruch
         this.choice = [];
     }
+
     /**
      * Zwraca wartość liczbową określającą stan gry:
      * 1 - wygrał gracz, '-1' - wygrał komputer, 0 - remis
-     * undefined - gdy gra się nie zakończyła - [czy to ma sens]
+     * undefined - gdy gra się nie zakończyła
      * 
      *  Przyjmuje obiekt game przechowujący informacje o grze 
-     * 
-     * 
-     * Modyfikator static. Za MDN: Static method calls are made directly on the class and are not callable on instances of the class. Static methods are often used to create utility functions.
-     * [czy to ma sens?! skoro klasę ]
-     * 
      *
      * @param {object} game 
      * @return {number} The x value.
@@ -93,9 +90,7 @@ class Computer {
 
         newGame.board[move] = newGame.activeTurn;
 
-        // kolejny ruch wykonuje drugi z graczy
         newGame.activeTurn = (newGame.activeTurn === 1) ? 0 : 1;
-        // newGame.notActive = (newGame.activeTurn === 1) ? 0 : 1;
 
         return newGame;
     }
