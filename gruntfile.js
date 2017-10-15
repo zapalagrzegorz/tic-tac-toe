@@ -61,6 +61,12 @@ module.exports = function (grunt) {
                 }
             }
         },
+        browserify: {
+            dist: {
+                src: 'dev/temp/main.js',
+                dest: 'dev/temp/bundled.js',
+            }
+        },
         babel: {
             options: {
                 presets: ['env']
@@ -80,6 +86,16 @@ module.exports = function (grunt) {
                 files: {
                     'build/js/scriptsEs5.js': 'dev/temp/scripts.js'
                 }
+            },
+            modules: {
+                options: {
+                    sourceMap: true
+                },
+                files: {
+                    'dev/temp/computer-player.js': 'dev/js/computer-player.js',
+                    'dev/temp/game.js': 'dev/js/game.js',
+                    'dev/temp/main.js': 'dev/js/main.js'
+                }
             }
         },
         uglify: {
@@ -89,6 +105,11 @@ module.exports = function (grunt) {
             dist: {
                 files: {
                     'build/js/scripts.min.js': 'dev/temp/scriptsEs5.js'
+                }
+            },
+            modules: {
+                files: { 
+                    'build/js/scripts.min.js': 'dev/temp/bundled.js'
                 }
             }
         },
@@ -149,6 +170,7 @@ module.exports = function (grunt) {
 
 // Default task(s).
 grunt.registerTask('default', ['clean', 'sass:dev', 'concat:dev', 'babel:dev', 'imagemin', 'browserSync', 'watch']);
-grunt.registerTask('dist', ['clean', 'imagemin', 'sass:dist', 'postcss', 'concat:dist', 'babel:dist', 'uglify'])
+grunt.registerTask('dist', ['clean', 'imagemin', 'sass:dist', 'postcss', 'concat:dev', 'babel:dist', 'uglify:dist']);
+grunt.registerTask('modules', ['babel:modules', 'browserify', 'uglify:modules']);
 
 };
