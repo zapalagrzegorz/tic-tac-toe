@@ -1,4 +1,6 @@
-# Tic tac toe
-FCC challange to make an unbeatable tic-tac-toe game 
+# Kołko i krzyżyk
 
-Up & running: http://gz-tictactoe.surge.sh/
+### Gra z komputerem, który nie pozwala wygrać.
+
+1. vanilla JS
+2. proste testy jednostkowe
