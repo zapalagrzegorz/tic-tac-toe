@@ -1,35 +1,36 @@
 {
-  "name": "fcc",
+  "name": "kolko-i-krzyzyk",
   "version": "1.0.0",
-  "description": "tic tac toe - free code camp challenge",
+  "description": "tic tac toe - code camp challenge",
   "main": "index.html",
   "dependencies": {
-    "bootstrap": "^4.0.0-beta"
+    "bootstrap": "^4.3.1"
   },
   "devDependencies": {
-    "autoprefixer": "^7.1.5",
+    "autoprefixer": "^7.2.6",
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
-    "cssnano": "^3.10.0",
-    "eslint": "^4.8.0",
-    "eslint-plugin-import": "^2.7.0",
-    "grunt": "^1.0.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "cssnano": "^4.1.10",
+    "eslint": "^4.19.1",
+    "eslint-plugin-import": "^2.17.3",
+    "grunt": "^1.0.4",
     "grunt-babel": "^7.0.0",
     "grunt-browser-sync": "^2.2.0",
-    "grunt-browserify": "^5.2.0",
+    "grunt-browserify": "^5.3.0",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-cssmin": "^2.2.1",
-    "grunt-contrib-imagemin": "^2.0.1",
-    "grunt-contrib-uglify": "^3.1.0",
-    "grunt-contrib-watch": "^1.0.0",
+    "grunt-contrib-imagemin": "^3.1.0",
+    "grunt-contrib-uglify": "^3.4.0",
+    "grunt-contrib-watch": "^1.1.0",
     "grunt-newer": "^1.2.0",
     "grunt-postcss": "^0.9.0",
     "grunt-sass": "^2.0.0",
     "load-grunt-tasks": "^3.5.2",
+    "node-sass": "^4.12.0",
     "pixrem": "^4.0.1",
-    "qunitjs": "^2.4.0"
+    "qunitjs": "^2.4.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

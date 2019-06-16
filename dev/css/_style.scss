@@ -16,6 +16,7 @@ section>div>div {
 }
 
 .board {
+    margin-top: 20vh;
     &__icon {
         padding-top: 1rem;
         padding-bottom: 1rem;
@@ -88,12 +89,11 @@ section>div>div {
     top: 0%;
     background: rgb(0, 0, 0);
     background: rgba(0, 0, 0, .3);
-    &__sandbox {}
     &__content {
         position: absolute;
         width: 80%;
         left: 10%;
-        top: 15%;
+        top: 35vh;
         background: #070000;
         transform: rotateY(90deg);
         padding: 2rem;
